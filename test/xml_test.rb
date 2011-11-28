@@ -77,8 +77,8 @@ class XmlTest < MiniTest::Spec
     describe ".from_xml" do
       it "passes all args to #from_xml" do
         block = lambda {|bind|}
-        @Band.any_instance.expects(:from_xml).with("{}", "yo") # FIXME: how to expect block?
-        @Band.from_xml("{}", "yo", &block)
+        @Band.any_instance.expects(:from_xml).with("{}") # FIXME: how to expect block?
+        @Band.from_xml("{}", &block)
       end
     end
     
