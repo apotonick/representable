@@ -5,3 +5,5 @@ doc
 Rake.config
 pkg
 .project
+*.swp
+*.swo
