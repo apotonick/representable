@@ -58,7 +58,7 @@ class RepresentableTest < MiniTest::Spec
   end
   
   
-  describe "#representation_name" do
+  describe "#representation_wrap" do
     class SoundSystem
       include Representable
     end
@@ -70,14 +70,24 @@ class RepresentableTest < MiniTest::Spec
     class SoftcoreBand < HardcoreBand
     end
     
-    it "provides the root 'tag' name" do
-      assert_equal "sound_system", SoundSystem.representation_name
+    it "returns false per default" do
+      assert_equal nil, SoundSystem.representation_wrap
+    end
+    
+    
+    it "infers a printable class name if set to true" do
+      HardcoreBand.representation_wrap = true
+      assert_equal "hardcore_band", HardcoreBand.send(:representation_wrap)
+    end
+    
+    it "can be set explicitely" do
+      HardcoreBand.representation_wrap = "breach"
+      assert_equal "breach", HardcoreBand.representation_wrap
     end
     
     it "inherits correctly" do
-      HardcoreBand.representation_name = "breach"
-      assert_equal "breach", HardcoreBand.representation_name
-      assert_equal "breach", SoftcoreBand.representation_name
+      HardcoreBand.representation_wrap = "breach"
+      assert_equal "breach", SoftcoreBand.representation_wrap
     end
   end
   

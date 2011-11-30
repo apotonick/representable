@@ -1,6 +1,6 @@
 module Representable
   class Definition # :nodoc:
-    attr_reader :name, :sought_type, :wrapper, :from
+    attr_reader :name, :sought_type, :from
     alias_method :getter, :name
     
     def initialize(sym, options={})
@@ -28,22 +28,9 @@ module Representable
       sought_type.is_a?(Class)
     end
     
-    def name?
-      @name == '*'
-    end
-
-    def content?
-      @name == '.'
-    end
-    
     def array?
       @array
     end
-    
-    def cdata?  # FIXME: move to XML!
-      @cdata
-    end
-    
     
     # Applies the block to +value+ which might also be a collection.
     def apply(value)

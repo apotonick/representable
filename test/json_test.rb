@@ -9,7 +9,6 @@ module JsonTest
     describe "JSON module" do
       before do
         @Band = Class.new(Band) do
-          self.representation_name= :band
           representable_property :label
         end
       end
@@ -42,35 +41,50 @@ module JsonTest
         end
         
         it "accepts json string" do
-          @band.from_json({band: {name: "Nofx", label: "NOFX"}}.to_json)
+          @band.from_json({name: "Nofx", label: "NOFX"}.to_json)
           assert_equal ["Nofx", "NOFX"], [@band.name, @band.label]
         end
         
         it "forwards block to #update_properties_from" do
-          @band.from_json({band: {name: "Nofx", label: "NOFX"}}.to_json) do |binding|
+          @band.from_json({name: "Nofx", label: "NOFX"}.to_json) do |binding|
             binding.definition.name == "name"
           end
           
           assert_equal ["Nofx", nil], [@band.name, @band.label]
         end
         
-        it "accepts wrapped properties" do
-          band = Band.new
-          band.from_json({:band => {:name => "This Is A Standoff"}}.to_json)
-          assert_equal "This Is A Standoff", band.name
+        
+        it "doesn't use wrap per default" do
+          @band.from_json({:name => "This Is A Standoff"}.to_json)
+          assert_equal "This Is A Standoff", @band.name
         end
         
-        it "accepts unwrapped properties using the :wrap option" do # DISCUSS: should be default.
-          band = Band.new
-          band.from_json({name: "This Is A Standoff"}.to_json, :wrap => false)
-          assert_equal "This Is A Standoff", band.name
+        it "respects :wrap option" do
+          @band.from_json({:band => {:name => "This Is A Standoff"}}.to_json, :wrap => :band)
+          assert_equal "This Is A Standoff", @band.name
+        end
+        
+        it "respects :wrap option over representation_wrap" do
+          @Band.class_eval do
+            self.representation_wrap = :group 
+          end
+          @band.from_json({:band => {:name => "This Is A Standoff"}}.to_json, :wrap => :band)
+          assert_equal "This Is A Standoff", @band.name
+        end
+        
+        it "respects representation_wrap" do
+          @Band.class_eval do
+            self.representation_wrap = :group 
+          end
+          @band.from_json({:group => {:name => "This Is A Standoff"}}.to_json)
+          assert_equal "This Is A Standoff", @band.name
         end
       end
       
       
       describe ".from_json" do
         it "delegates to #from_json after object conception" do
-          band = @Band.from_json({band: {name: "Nofx", label: "NOFX"}}.to_json) do |binding| binding.definition.name == "name" end
+          band = @Band.from_json({name: "Nofx", label: "NOFX"}.to_json) do |binding| binding.definition.name == "name" end
           assert_equal ["Nofx", nil], [band.name, band.label]
         end
         
@@ -95,10 +109,41 @@ module JsonTest
         end
       end
       
+      
       describe ".from_hash" do
         it "accepts unwrapped hash with string keys" do
           band = Band.from_hash("name" => "Bombshell Rocks")
           assert_equal "Bombshell Rocks", band.name
+        end
+      end
+    
+    
+      describe "#to_json" do
+        before do
+          @band = @Band.new
+          @band.label = "Fat"
+        end
+        
+        it "doesn't wrap per default" do
+          assert_equal "{\"label\":\"Fat\"}", @band.to_json
+        end
+        
+        it "respects :wrap option" do
+          assert_equal "{\"band\":{\"label\":\"Fat\"}}", @band.to_json(:wrap => :band)
+        end
+        
+        it "respects :wrap option over representation_wrap" do
+          @Band.class_eval do
+            self.representation_wrap = :group 
+          end
+          assert_equal "{\"band\":{\"label\":\"Fat\"}}", @band.to_json(:wrap => :band)
+        end
+        
+        it "respects representation_wrap" do
+          @Band.class_eval do
+            self.representation_wrap = :group 
+          end
+          assert_equal "{\"group\":{\"label\":\"Fat\"}}", @band.to_json
         end
       end
     end
@@ -112,7 +157,7 @@ module JsonTest
       end
       
       it "#from_json creates correct accessors" do
-        band = Band.from_json({:band => {:name => "Bombshell Rocks"}}.to_json)
+        band = Band.from_json({:name => "Bombshell Rocks"}.to_json)
         assert_equal "Bombshell Rocks", band.name
       end
       
@@ -120,7 +165,7 @@ module JsonTest
         band = Band.new
         band.name = "Cigar"
         
-        assert_equal '{"band":{"name":"Cigar"}}', band.to_json
+        assert_equal '{"name":"Cigar"}', band.to_json
       end
     end
     
@@ -136,7 +181,7 @@ module JsonTest
       end
       
       it "#from_json creates one Item instance" do
-        album = Album.from_json('{"album":{"label":{"name":"Fat Wreck"}}}')
+        album = Album.from_json('{"label":{"name":"Fat Wreck"}}')
         assert_equal "Fat Wreck", album.label.name
       end
       
@@ -144,7 +189,23 @@ module JsonTest
         label = Label.new; label.name = "Fat Wreck"
         album = Album.new; album.label = label
         
-        assert_equal '{"album":{"label":{"name":"Fat Wreck"}}}', album.to_json
+        assert_equal '{"label":{"name":"Fat Wreck"}}', album.to_json
+      end
+      
+      describe ":different_name, :as => Label" do
+        before do
+          @Album = Class.new do
+            include Representable::JSON
+            representable_property :seller, :as => Label
+          end
+        end
+        
+        it "#to_xml respects the different name" do
+          label = Label.new; label.name = "Fat Wreck"
+          album = @Album.new; album.seller = label
+          
+          assert_equal "{\"seller\":{\"name\":\"Fat Wreck\"}}", album.to_json(:wrap => false)
+        end
       end
     end
     
@@ -155,13 +216,13 @@ module JsonTest
       end
       
       it "respects :from in #from_json" do
-        song = Song.from_json({:song => {:songName => "Run To The Hills"}}.to_json)
+        song = Song.from_json({:songName => "Run To The Hills"}.to_json)
         assert_equal "Run To The Hills", song.name
       end
       
       it "respects :from in #to_json" do
         song = Song.new; song.name = "Run To The Hills"
-        assert_equal '{"song":{"songName":"Run To The Hills"}}', song.to_json
+        assert_equal '{"songName":"Run To The Hills"}', song.to_json
       end
     end
   end
@@ -175,7 +236,7 @@ module JsonTest
       end
       
       it "#from_json creates correct accessors" do
-        cd = CD.from_json({:cd => {:songs => ["Out in the cold", "Microphone"]}}.to_json)
+        cd = CD.from_json({:songs => ["Out in the cold", "Microphone"]}.to_json)
         assert_equal ["Out in the cold", "Microphone"], cd.songs
       end
     
@@ -183,7 +244,7 @@ module JsonTest
         cd = CD.new
         cd.songs = ["Out in the cold", "Microphone"]
         
-        assert_equal '{"cd":{"songs":["Out in the cold","Microphone"]}}', cd.to_json
+        assert_equal '{"songs":["Out in the cold","Microphone"]}', cd.to_json
       end
     end
     
@@ -204,9 +265,9 @@ module JsonTest
       
       describe "#from_json" do
         it "pushes collection items to array" do
-          cd = Compilation.from_json({:compilation => {:bands => [
+          cd = Compilation.from_json({:bands => [
             {:name => "Cobra Skulls"},
-            {:name => "Diesel Boy"}]}}.to_json)
+            {:name => "Diesel Boy"}]}.to_json)
           assert_equal ["Cobra Skulls", "Diesel Boy"], cd.bands.map(&:name).sort
         end
         
@@ -220,7 +281,7 @@ module JsonTest
         cd = Compilation.new
         cd.bands = [Band.new("Diesel Boy"), Band.new("Bad Religion")]
         
-        assert_equal '{"compilation":{"bands":[{"name":"Diesel Boy"},{"name":"Bad Religion"}]}}', cd.to_json
+        assert_equal '{"bands":[{"name":"Diesel Boy"},{"name":"Bad Religion"}]}', cd.to_json
       end
     end
     
@@ -232,7 +293,7 @@ module JsonTest
       end
       
       it "respects :from in #from_json" do
-        songs = Songs.from_json({:songs => {:songList => ["Out in the cold", "Microphone"]}}.to_json)
+        songs = Songs.from_json({:songList => ["Out in the cold", "Microphone"]}.to_json)
         assert_equal ["Out in the cold", "Microphone"], songs.tracks
       end
     
@@ -240,7 +301,7 @@ module JsonTest
         songs = Songs.new
         songs.tracks = ["Out in the cold", "Microphone"]
         
-        assert_equal '{"songs":{"songList":["Out in the cold","Microphone"]}}', songs.to_json
+        assert_equal '{"songList":["Out in the cold","Microphone"]}', songs.to_json
       end
     end
   end

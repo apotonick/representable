@@ -13,7 +13,7 @@ class BindingsTest < MiniTest::Spec
   
   
   describe "TextRef#read" do
-    def parse_xml(xml); Nokogiri::XML::Node.from(xml); end
+    def parse_xml(xml); Nokogiri::XML(xml).root; end
     
     before do
       @ref = Representable::XML::TextBinding.new(Representable::Definition.new(:song))

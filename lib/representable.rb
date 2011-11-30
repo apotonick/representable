@@ -6,13 +6,14 @@ require 'representable/nokogiri_extensions'
 module Representable
   def self.included(base)
     base.class_eval do
-      extend  ClassMethods::Accessors, ClassMethods::Declarations
+      extend ClassMethods::Declarations
+      extend ClassMethods::Accessors
       
       extend Hooks::InheritableAttribute
       inheritable_attr :representable_attrs
       self.representable_attrs = []
       
-      inheritable_attr :explicit_representation_name  # FIXME: move to Accessors.
+      inheritable_attr :representable_wrap
     end
   end
   
@@ -85,12 +86,20 @@ private
     end
 
     module Accessors
-      def representation_name=(name)
-        self.explicit_representation_name = name
+      def representation_wrap=(name)
+        self.representable_wrap = name
       end
       
-      def representation_name
-        explicit_representation_name or name.split('::').last.
+      # Returns the wrapper for the representation. Mostly used in XML.
+      def representation_wrap
+        return unless representable_wrap
+        return infer_representation_name if representable_wrap === true
+        representable_wrap
+      end
+      
+    private
+      def infer_representation_name
+        name.split('::').last.
          gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
          gsub(/([a-z\d])([A-Z])/,'\1_\2').
          downcase

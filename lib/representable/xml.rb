@@ -13,20 +13,12 @@ module Representable
       base.class_eval do
         include Representable
         extend ClassMethods
+        self.representation_wrap = true # let representable compute it.
       end
-    end
-    
-    
-    class Definition < Representable::Definition
-      # FIXME: extract xml-specific from Definition.
     end
     
     
     module ClassMethods
-      def definition_class
-        Definition
-      end
-      
       def binding_for_definition(definition)
         (BINDING_FOR_TYPE[definition.sought_type] or ObjectBinding).new(definition)
       end
@@ -38,29 +30,34 @@ module Representable
       #
       # Example:
       #   band.from_xml("<band><name>Nofx</name></band>")
-      def from_xml(doc, *args, &block)
-        create_from_xml(*args).tap do |object|
-          object.from_xml(doc, *args, &block)
-        end
+      def from_xml(*args, &block)
+        new.from_xml(*args, &block)
       end
       
-    private
-      def create_from_xml(*args)
-        new(*args)
+      def from_node(*args, &block)
+        new.from_node(*args, &block)
       end
     end
+    
     
     def from_xml(doc, *args, &block)
-      xml = Nokogiri::XML::Node.from(doc)
-      update_properties_from(xml, &block)
+      node = Nokogiri::XML(doc).root
+      from_node(node, *args, &block)
     end
     
+    def from_node(node, options={}, &block)
+      update_properties_from(node, &block)
+    end
     
     # Returns a Nokogiri::XML object representing this object.
-    def to_xml(params={})
-      root_tag = params[:name] || self.class.representation_name
+    def to_node(options={})
+      root_tag = options[:wrap] || self.class.representation_wrap
       
       create_representation_with(Nokogiri::XML::Node.new(root_tag.to_s, Nokogiri::XML::Document.new))
+    end
+    
+    def to_xml(*args)
+      to_node(*args).to_s
     end
   end
 end
