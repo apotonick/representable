@@ -41,12 +41,12 @@ module JsonTest
         end
         
         it "accepts json string" do
-          @band.from_json({name: "Nofx", label: "NOFX"}.to_json)
+          @band.from_json({:name => "Nofx", :label => "NOFX"}.to_json)
           assert_equal ["Nofx", "NOFX"], [@band.name, @band.label]
         end
         
         it "forwards block to #update_properties_from" do
-          @band.from_json({name: "Nofx", label: "NOFX"}.to_json) do |binding|
+          @band.from_json({:name => "Nofx", :label => "NOFX"}.to_json) do |binding|
             binding.definition.name == "name"
           end
           
@@ -84,7 +84,7 @@ module JsonTest
       
       describe ".from_json" do
         it "delegates to #from_json after object conception" do
-          band = @Band.from_json({name: "Nofx", label: "NOFX"}.to_json) do |binding| binding.definition.name == "name" end
+          band = @Band.from_json({:name => "Nofx", :label => "NOFX"}.to_json) do |binding| binding.definition.name == "name" end
           assert_equal ["Nofx", nil], [band.name, band.label]
         end
         
