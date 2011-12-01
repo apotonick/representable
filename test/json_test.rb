@@ -41,7 +41,7 @@ module JsonTest
       describe "#from_json" do
         before do
           @band = @Band.new
-          @json  = {name: "Nofx", label: "NOFX"}.to_json
+          @json  = {:name => "Nofx", :label => "NOFX"}.to_json
         end
         
         it "parses JSON and assigns properties" do
@@ -91,7 +91,6 @@ module JsonTest
           assert_equal "This Is A Standoff", @band.name
         end
       end
-      
       
       describe "#to_json" do
         it "delegates to #to_hash and returns string" do

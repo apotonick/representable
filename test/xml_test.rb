@@ -94,7 +94,6 @@ class XmlTest < MiniTest::Spec
       end
     end
     
-    
     describe "#to_xml" do
       it "delegates to #to_node and returns string" do
         assert_xml_equal "<band><name>Rise Against</name></band>", Band.new("Rise Against").to_xml

@@ -1,6 +1,10 @@
 require 'hooks/inheritable_attribute'
 require 'representable/definition'
 
+if RUBY_VERSION =~ /^1.8/
+  require "19compatibility"
+end
+
 module Representable
   def self.included(base)
     base.class_eval do
