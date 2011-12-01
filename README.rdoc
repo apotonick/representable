@@ -1,94 +1,220 @@
 = Representable
 
-<em>Maps representation documents from and to Ruby objects.</em>
+<em>Maps documents to Ruby objects and back.</em>
 
 
 == Introduction
 
-_Representable_ maps fragments in documents to attributes in Ruby objects and back. It allows parsing representations and gives an object-oriented interface to the document. But that's only half of it! Representable can also render documents from an object instance. 
+_Representable_ maps fragments in documents to attributes in Ruby objects and back. It allows parsing representations giving an object-oriented interface to the document. But that's only half of it! Representable can also render documents from an object instance. 
 
-This is especially helpful when implementing REST services and clients and keeps your representation knowledge in one place.
+This keeps your representation knowledge in one place when implementing REST services and clients.
+
+
+== Features
+
+* Bidirectional - rendering and parsing
+* OOP documents
+* Support for JSON and XML
+
 
 == Example
 
-When writing a REST service you'd have to parse and extract data from an incoming representation document manually. Given the following XML document which represents an order.
+Since you keep forgetting the heroes of your childhood you decide to implement a REST service for storing and querying those. You choose representable for handling representations.
 
-  <order>
-    <id>1</id>
-    <item>
-      <name>Chocolate Cookie</name>
-    </item>
-    <item>
-      <name>Vanilla Muffin</name>
-    </item>
-  </order>  
+  gem 'representable'
 
-Now, parsing manually starts simple but gets complex soon. In the end, you have a nested hash data structure. Try this with Representable.
 
-  class Order
-    include Representable::XML
+== Defining Representations
+
+  require 'representable/json'
+
+  class Hero
+    include Representable::JSON
     
-    representable_property :id
-    representable_collection :items, :from => :item, :as => Item
+    representable_property :forename
+    representable_property :surename
+  end
+
+This declares two simple properties. Representable will automatically add accessors to the class.
+
+== Rendering
+
+Now let's create and render our first hero.
+
+  peter = Hero.new
+  peter.forename = "Peter"
+  peter.surename = "Pan"
+
+  peter.to_json
+  #=> {"forename":"Peter","surename":"Pan"}
+
+Those two properties are considered when rendering in #to_json.
+
+== Parsing
+
+The cool thing about Representable is: it works bidirectional. By declaring properties you can not only render but also parse!
+
+  hook = Hero.from_json('{"forename":"Captain","surename":"Hook"}')
+  hook.forename #=> "Captain"
+  
+See how easy this is? You can use an object-oriented method to read from the document. 
+
+== Nesting
+
+You need a second domain object. Every hero has a place he comes from.
+
+  class Location
+    include Representable::JSON
+    
+    representable_property :title
+  end
+
+Peter, where ya' from?
+  
+  neverland = Location.new
+  neverland.title = "Neverland"
+
+It makes sense to embed the location in the hero's document.
+
+  class Hero
+    representable_property :origin, :as => Location
+  end
+
+Using the +:as+ option allows you to include other representable objects.
+
+  peter.origin = neverland
+  peter.to_json
+  #=> {"forename":"Peter","surename":"Pan","origin":{"title":"Neverland"}}
+
+
+== Parsing Nested Documents
+
+Don't forget how easy it is to parse nested representations.
+
+  hook = Hero.from_json('{"name":"Captain","surename":"Hook","origin":{"title":"Dark Ocean"}}')
+  hook.origin.inspect #=> #<Location:0x910d7c8 @title="Dark Ocean">
+  hook.origin.title #=> "Dark Ocean"
+
+Representable just creates objects from the parsed document - nothing more and nothing less.
+
+== Simple Collections
+
+Heroes have features, special abilities that make 'em a superhero.
+
+  class Hero
+    representable_collection :features
+  end
+
+The second API method is +representable_collection+ and, well, declares a collection.
+
+  peter.features = ["stays young", "can fly"]
+  peter.to_json
+#=> {"forename":"Peter","surename":"Pan","origin":{"title":"Neverland"},"features":["stays young","can fly"]}
+
+
+== Typed Collections
+
+Ok, things start working out. Your hero has a name, an origin and a list of features so far. Why not allows adding friends to Peter - nobody wants to be alone!
+
+  class Hero
+    representable_collection :friends, :as => Hero
+  end
+
+Again, we type the collection by using the +:as+ option.
+
+  nick = Hero.new
+  nick.forename = "Nick"
+
+  el = Hero.new
+  el.forename = "El"
+
+  peter.friends = [nick, el]
+
+I always wanted to be Peter's bro... in this example it is possible! 
+  
+  peter.to_json
+  #=> {"forename":"Peter","surename":"Pan","origin":{"title":"Neverland"},"features":["stays young","can fly"],"friends":[{"name":"Nick"},{"name":"El"}]}
+
+
+== Customizing
+
+=== Wrapping
+
+Representable is designed to be very simple. However, a few tweaks are available. What if you want to wrap your document?
+
+  class Hero
+    self.representation_wrap = true
+  end
+
+  peter.to_json #=> {"hero":{"name":"Peter","surename":"Pan"}}
+
+You can also provide a custom wrapper.
+
+  class Hero
+    self.representation_wrap = :boy
+  end
+
+  peter.to_json #=> {"boy":{"name":"Peter","surename":"Pan"}}
+
+
+=== Mapping
+
+If your accessor name doesn't match the attribute name in the document, use the +:from+ matcher.
+
+  class Hero
+    representable_property :forename, :from => :name
   end
   
-  class Item
-    include Representable::XML
-    
-    representable_property :name
+  peter.to_json #=> {"name":"Peter","surename":"Pan"}
+
+
+=== Filtering
+
+Representable allows you to skip properties when rendering or parsing.
+
+  peter.to_json do |name|
+    name == :forename
   end
-    
-== Consuming Representations
 
-Representable gives you easy access for consuming incoming representation documents. It maps the appropriate content to objects' attributes.
-
-  @order = Order.from_xml(xml)
-  @order.id               # => "1"
-  @order.items            # => [<item>, <item>]
-  @order.items.first.name # => "Chocolate Cookie"
+  #=> {"forename":"Peter"}
 
 
-== Extendability
+== XML support
 
-The cool thing with object-oriented representations is: you can treat them just like any other object in Ruby and extend them dynamically - which is impossible with plain hashes.
-
-  class Order
-    # ...
-    
-    def sort_items
-      items.sort! { |a, b| a.name <=> b.name }
-    end
-
-
-== Generating Representations
-
-Usually you have two places that share knowledge about a representation and its syntax and semantics: the parser <em>and</em> the renderer. With Representable, this is kept in one place.
-
-  @order.to_xml # => "<order><id>1</id>...</order>"
+Representable allows declaring a document's syntax and structure while having different formats. Currently, it ships with JSON and XML bindings.
   
-You can also render a representation from a newly created object.
+  class Hero
+    include Representable::XML
+  end
+  
+  peter.to_xml
+  #=> <hero>
+    <name>Peter</name>
+    <surename>Pan</surename>
+    <location>
+      <title>Neverland</title>
+    </location>
+    <hero>
+      <name>Nick</name>
+    </hero>
+    <hero>
+      <name>El</name>
+    </hero>
+  </hero>
 
-  Order.new(:id => 2, :items => [candy]).to_xml
-
-
-Representable makes working with representations extremely easy and testable.
-
-
-== Serialization Backends
-
-This gem ships with JSON and XML support, meaning you can parse and render both media formats. 
+The #to_xml method gives us an XML representation of Peter - great!
 
 
 == More
 
-Representable was written with REST representations in mind. However, it is a generic module for working with documents. If you do consider using it for a REST project, check out the {Roar framework}[http://github.com/apotonick/roar], which comes with representers, built-in hypermedia support and more. It internally uses Representable and streamlines the process for building hypermedia-driven REST applications.
+Instead of spreading knowledge about your representations about the entire framework, Representable keeps rendering and parsing representations in one single, testable asset. It is a new abstraction layer missing in many "RESTful" frameworks.
 
-Representable comes with parser and renderer for XML and JSON and can easily be extended (Warning: internal API still changing).
+Representable was written with REST representations in mind. However, it is a generic module for working with documents. If you do consider using it for a REST project, check out the {Roar framework}[http://github.com/apotonick/roar], which comes with representers, built-in hypermedia support and more. It internally uses Representable and streamlines the process for building hypermedia-driven REST applications.
 
 
 == Copyright
 
-Representable is a simplified fork of the ROXML gem. Big thanks to Ben Woosley for his work.
+Representable is a heavily simplified fork of the ROXML gem. Big thanks to Ben Woosley for his work.
 
-Copyright (c) 2011 Nick Sutterer <apotonick@gmail.com>
-Copyright (c) 2004-2009 Ben Woosley, Zak Mandhro and Anders Engstrom.
+* Copyright (c) 2011 Nick Sutterer <apotonick@gmail.com>
+* Copyright (c) 2004-2009 Ben Woosley, Zak Mandhro and Anders Engstrom.

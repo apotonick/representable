@@ -47,10 +47,10 @@ module Representable
       def write(xml, value)
         if definition.array?
           value.each do |v|
-            add(xml.add_node(definition.from), v)
+            add(xml, definition.from, v)
           end
         else
-          add(xml.add_node(definition.from), value)
+          add(xml, definition.from, value)
         end
       end
 
@@ -60,9 +60,10 @@ module Representable
           node.content
         end
       end
-
-      def add(dest, value)
-        dest.content = value.to_s
+      
+      def add(xml, name, value)
+        child = xml.add_child Nokogiri::XML::Node.new(name, xml.document)
+        child.content = value
       end
     end
     

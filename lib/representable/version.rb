@@ -1,3 +1,3 @@
 module Representable
-  VERSION = "0.9.3.patch1"
+  VERSION = "0.10.0"
 end

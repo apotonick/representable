@@ -116,8 +116,8 @@ class RepresentableTest < MiniTest::Spec
     
     it "skips elements when block returns false" do
       band = PopBand.new
-      band.update_properties_from({"name"=>"No One's Choice", "groupies"=>2}) do |binding|
-        binding.definition.name == "name"
+      band.update_properties_from({"name"=>"No One's Choice", "groupies"=>2}) do |name|
+        name == :name
       end
       assert_equal "No One's Choice", band.name
       assert_equal nil, band.groupies
@@ -141,7 +141,7 @@ class RepresentableTest < MiniTest::Spec
     end
     
     it "skips elements when block returns false" do
-      assert_equal({"name"=>"No One's Choice"}, @band.send(:create_representation_with, {}) do |binding| binding.definition.name == "name" end)
+      assert_equal({"name"=>"No One's Choice"}, @band.send(:create_representation_with, {}) do |name| name == :name end)
     end
   end
   

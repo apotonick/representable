@@ -8,142 +8,145 @@ module JsonTest
     
     describe "JSON module" do
       before do
-        @Band = Class.new(Band) do
+        @Band = Class.new do
+          include Representable::JSON
+          representable_property :name
           representable_property :label
-        end
-      end
-      
-      class Band
-        include Representable::JSON
-        representable_property :name
-      end
-        
-      describe "#binding_for_definition" do
-        it "returns ObjectBinding" do
-          assert_kind_of Json::ObjectBinding, Band.binding_for_definition(Def.new(:band, :as => Hash))
-        end
-        
-        it "returns TextBinding" do
-          assert_kind_of Json::TextBinding, Band.binding_for_definition(Def.new(:band))
-        end
-      end
-      
-      describe "#representable_bindings" do
-        it "returns bindings for each property" do
-          assert_equal 1, Band.representable_bindings.size
-          assert_equal "name", Band.representable_bindings.first.definition.name
-        end
-      end
-      
-      describe "#from_json" do
-        before do
-          @band = @Band.new
-        end
-        
-        it "accepts json string" do
-          @band.from_json({:name => "Nofx", :label => "NOFX"}.to_json)
-          assert_equal ["Nofx", "NOFX"], [@band.name, @band.label]
-        end
-        
-        it "forwards block to #update_properties_from" do
-          @band.from_json({:name => "Nofx", :label => "NOFX"}.to_json) do |binding|
-            binding.definition.name == "name"
-          end
           
-          assert_equal ["Nofx", nil], [@band.name, @band.label]
-        end
-        
-        
-        it "doesn't use wrap per default" do
-          @band.from_json({:name => "This Is A Standoff"}.to_json)
-          assert_equal "This Is A Standoff", @band.name
-        end
-        
-        it "respects :wrap option" do
-          @band.from_json({:band => {:name => "This Is A Standoff"}}.to_json, :wrap => :band)
-          assert_equal "This Is A Standoff", @band.name
-        end
-        
-        it "respects :wrap option over representation_wrap" do
-          @Band.class_eval do
-            self.representation_wrap = :group 
+          def initialize(name=nil)
+            self.name = name if name
           end
-          @band.from_json({:band => {:name => "This Is A Standoff"}}.to_json, :wrap => :band)
-          assert_equal "This Is A Standoff", @band.name
-        end
-        
-        it "respects representation_wrap" do
-          @Band.class_eval do
-            self.representation_wrap = :group 
-          end
-          @band.from_json({:group => {:name => "This Is A Standoff"}}.to_json)
-          assert_equal "This Is A Standoff", @band.name
         end
       end
-      
-      
+    
+    
       describe ".from_json" do
-        it "delegates to #from_json after object conception" do
-          band = @Band.from_json({:name => "Nofx", :label => "NOFX"}.to_json) do |binding| binding.definition.name == "name" end
-          assert_equal ["Nofx", nil], [band.name, band.label]
-        end
-        
-        it "passes all args to #from_json" do
-          block = lambda {|a,b|}
+        it "is delegated to #from_json" do
+          block = lambda {|bind|}
           @Band.any_instance.expects(:from_json).with("{}", "yo") # FIXME: how to expect block?
           @Band.from_json("{}", "yo", &block)
-        end
-        
-        # TODO: move following tests to #from_json test.
-        it "raises error with emtpy string" do
-          assert_raises JSON::ParserError do
-            Band.from_json("")
-          end
-        end
-        
-        it "returns empty hash with inappropriate hash" do
-          assert Band.from_json({:song => "Message In A Bottle"}.to_json)
-        end
-        
-        it "generates warning with inappropriate hash in debugging mode" do
         end
       end
       
       
       describe ".from_hash" do
-        it "accepts unwrapped hash with string keys" do
-          band = Band.from_hash("name" => "Bombshell Rocks")
-          assert_equal "Bombshell Rocks", band.name
+        it "is delegated to #from_hash" do
+          block = lambda {|bind|}
+          @Band.any_instance.expects(:from_hash).with("{}", "yo") # FIXME: how to expect block?
+          @Band.from_hash("{}", "yo", &block)
         end
       end
-    
-    
-      describe "#to_json" do
+      
+      
+      describe "#from_json" do
         before do
           @band = @Band.new
-          @band.label = "Fat"
+          @json  = {:name => "Nofx", :label => "NOFX"}.to_json
         end
         
-        it "doesn't wrap per default" do
-          assert_equal "{\"label\":\"Fat\"}", @band.to_json
+        it "parses JSON and assigns properties" do
+          @band.from_json(@json)
+          assert_equal ["Nofx", "NOFX"], [@band.name, @band.label]
+        end
+        
+        it "forwards block to #from_hash" do
+          @band.from_json(@json) do |name|
+            name == :name
+          end
+          
+          assert_equal ["Nofx", nil], [@band.name, @band.label]
+        end
+      end
+      
+      
+      describe "#from_hash" do
+        before do
+          @band = @Band.new
+          @hash  = {"name" => "Nofx", "label" => "NOFX"}
+        end
+        
+        it "receives hash and assigns properties" do
+          @band.from_hash(@hash)
+          assert_equal ["Nofx", "NOFX"], [@band.name, @band.label]
+        end
+        
+        it "forwards block to #update_properties_from" do
+          @band.from_hash(@hash) do |name|
+            name == :name
+          end
+          
+          assert_equal ["Nofx", nil], [@band.name, @band.label]
         end
         
         it "respects :wrap option" do
-          assert_equal "{\"band\":{\"label\":\"Fat\"}}", @band.to_json(:wrap => :band)
+          @band.from_hash({"band" => {"name" => "This Is A Standoff"}}, :wrap => :band)
+          assert_equal "This Is A Standoff", @band.name
         end
-        
+          
         it "respects :wrap option over representation_wrap" do
           @Band.class_eval do
             self.representation_wrap = :group 
           end
-          assert_equal "{\"band\":{\"label\":\"Fat\"}}", @band.to_json(:wrap => :band)
+          @band.from_hash({"band" => {"name" => "This Is A Standoff"}}, :wrap => :band)
+          assert_equal "This Is A Standoff", @band.name
+        end
+      end
+      
+      describe "#to_json" do
+        it "delegates to #to_hash and returns string" do
+          assert_equal "{\"name\":\"Rise Against\"}", @Band.new("Rise Against").to_json
         end
         
-        it "respects representation_wrap" do
+        it "forwards block to #to_hash" do
+          band = @Band.new
+          band.name  = "The Guinea Pigs"
+          band.label = "n/a"
+          json = band.to_json do |name|
+            name == :name
+          end
+          
+          assert_equal "{\"name\":\"The Guinea Pigs\"}", json
+        end
+      end
+      
+      
+      describe "#to_hash" do
+        it "returns unwrapped hash" do
+          hash = @Band.new("Rise Against").to_hash
+          assert_equal({"name"=>"Rise Against"}, hash)
+        end
+        
+        it "respects #representation_wrap=" do
+          @Band.representation_wrap = :group
+          assert_equal({:group=>{"name"=>"Rise Against"}}, @Band.new("Rise Against").to_hash)
+        end
+        
+        it "respects :wrap option" do
+          assert_equal({:band=>{"name"=>"NOFX"}}, @Band.new("NOFX").to_hash(:wrap => :band))
+        end
+          
+        it "respects :wrap option over representation_wrap" do
           @Band.class_eval do
             self.representation_wrap = :group 
           end
-          assert_equal "{\"group\":{\"label\":\"Fat\"}}", @band.to_json
+          assert_equal({:band=>{"name"=>"Rise Against"}}, @Band.new("Rise Against").to_hash(:wrap => :band))
+        end
+      end
+        
+      describe "#binding_for_definition" do
+        it "returns ObjectBinding" do
+          assert_kind_of Json::ObjectBinding, @Band.binding_for_definition(Def.new(:band, :as => Hash))
+        end
+        
+        it "returns TextBinding" do
+          assert_kind_of Json::TextBinding, @Band.binding_for_definition(Def.new(:band))
+        end
+      end
+      
+      describe "#representable_bindings" do
+        it "returns bindings for each property" do
+          assert_equal 2, @Band.representable_bindings.size
+          assert_equal "name", @Band.representable_bindings.first.definition.name
         end
       end
     end

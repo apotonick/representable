@@ -1,5 +1,6 @@
 module Representable
-  class Definition # :nodoc:
+  # Created at class compile time. Keeps configuration options for one property.
+  class Definition
     attr_reader :name, :sought_type, :from
     alias_method :getter, :name
     

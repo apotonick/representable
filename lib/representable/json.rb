@@ -1,5 +1,6 @@
-require 'json'
+require 'representable'
 require 'representable/bindings/json_bindings'
+require 'json'
 
 module Representable
   # Brings #to_xml, #to_hash, #from_xml and #from_hash to your object.
@@ -48,8 +49,8 @@ module Representable
       update_properties_from(data, &block)
     end
     
-    def to_hash(options={})
-      hash = create_representation_with({})
+    def to_hash(options={}, &block)
+      hash = create_representation_with({}, &block)
       
       return hash unless wrap = options[:wrap] || self.class.representation_wrap
       
@@ -57,8 +58,8 @@ module Representable
     end
     
     # Returns a JSON string representing this object.
-    def to_json(options={})
-      to_hash(options).to_json
+    def to_json(*args, &block)
+      to_hash(*args, &block).to_json
     end
   end
 end

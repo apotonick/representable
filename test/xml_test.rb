@@ -10,9 +10,12 @@ class Band
   end
 end
 
-class Label
-  def to_node
-    "<label>Fat Wreck</label>"
+class Album
+  include Representable::XML
+  representable_property :band, :as => Band
+  
+  def initialize(band=nil)
+    band and self.band = band
   end
 end
   
@@ -29,39 +32,23 @@ class XmlTest < MiniTest::Spec
         representable_property :name
         representable_property :label
       end
-      
-      @Link = Class.new do
-        include Representable::XML
-        representable_property :href,   :from => "@href"
-        representable_property :title,  :from => "@title"
+    end
+    
+    
+    describe ".from_xml" do
+      it "is delegated to #from_xml" do
+        block = lambda {|bind|}
+        @Band.any_instance.expects(:from_xml).with("{}", "yo") # FIXME: how to expect block?
+        @Band.from_xml("{}", "yo", &block)
       end
     end
     
     
-    describe "#binding_for_definition" do
-      it "returns AttributeBinding" do
-        assert_kind_of XML::AttributeBinding, @Link.binding_for_definition(Def.new(:band, :from => "@band"))
-      end
-      
-      it "returns ObjectBinding" do
-        assert_kind_of XML::ObjectBinding, @Link.binding_for_definition(Def.new(:band, :as => Hash))
-      end
-      
-      it "returns TextBinding" do
-        assert_kind_of XML::TextBinding, @Link.binding_for_definition(Def.new(:band, :from => :content))
-      end
-    end
-    
-    
-    describe "#to_xml" do
-      it "wraps with infered class name per default" do
-        assert_xml_equal "<band><name>Rise Against</name></band>", Band.new("Rise Against").to_xml
-      end
-      
-      it "respects #representation_wrap=" do
-        klass = Class.new(Band)
-        klass.representation_wrap = :group
-        assert_xml_equal "<group><name>Rise Against</name></group>", klass.new("Rise Against").to_xml
+    describe ".from_node" do
+      it "is delegated to #from_node" do
+        block = lambda {|bind|}
+        @Band.any_instance.expects(:from_node).with("{}", "yo") # FIXME: how to expect block?
+        @Band.from_node("{}", "yo", &block)
       end
     end
     
@@ -69,32 +56,97 @@ class XmlTest < MiniTest::Spec
     describe "#from_xml" do
       before do
         @band = @Band.new
+        @xml  = %{<band><name>Nofx</name><label>NOFX</label></band>}
       end
       
-      it "accepts xml string" do
-        @band.from_xml(%{<band><name>Nofx</name><label>NOFX</label></band>})
+      it "parses XML and assigns properties" do
+        @band.from_xml(@xml)
         assert_equal ["Nofx", "NOFX"], [@band.name, @band.label]
       end
       
-      it "forwards block to #update_properties_from" do
-        @band.from_xml(%{<band><name>Nofx</name><label>NOFX</label></band>}) do |binding|
-          binding.definition.name == "name"
+      it "forwards block to #from_node" do
+        @band.from_xml(@xml) do |name|
+          name == :name
         end
         
         assert_equal ["Nofx", nil], [@band.name, @band.label]
       end
     end
     
-    describe ".from_xml" do
-      it "passes all args to #from_xml" do
-        block = lambda {|bind|}
-        @Band.any_instance.expects(:from_xml).with("{}") # FIXME: how to expect block?
-        @Band.from_xml("{}", &block)
+    
+    describe "#from_node" do
+      before do
+        @band = @Band.new
+        @xml  = Nokogiri::XML(%{<band><name>Nofx</name><label>NOFX</label></band>}).root
+      end
+      
+      it "receives Nokogiri node and assigns properties" do
+        @band.from_node(@xml)
+        assert_equal ["Nofx", "NOFX"], [@band.name, @band.label]
+      end
+      
+      it "forwards block to #update_properties_from" do
+        @band.from_node(@xml) do |name|
+          name == :name
+        end
+        
+        assert_equal ["Nofx", nil], [@band.name, @band.label]
       end
     end
     
+    describe "#to_xml" do
+      it "delegates to #to_node and returns string" do
+        assert_xml_equal "<band><name>Rise Against</name></band>", Band.new("Rise Against").to_xml
+      end
+      
+      it "forwards block to #to_node" do
+        band = @Band.new
+        band.name  = "The Guinea Pigs"
+        band.label = "n/a"
+        xml = band.to_xml do |name|
+          name == :name
+        end
+        
+        assert_xml_equal "<band><name>The Guinea Pigs</name></band>", xml
+      end
+    end
+    
+    
+    describe "#to_node" do
+      it "returns Nokogiri node" do
+        node = Band.new("Rise Against").to_node
+        assert_kind_of Nokogiri::XML::Element, node
+      end
+      
+      it "wraps with infered class name per default" do
+        node = Band.new("Rise Against").to_node
+        assert_xml_equal "<band><name>Rise Against</name></band>", node.to_s 
+      end
+      
+      it "respects #representation_wrap=" do
+        klass = Class.new(Band)
+        klass.representation_wrap = :group
+        assert_xml_equal "<group><name>Rise Against</name></group>", klass.new("Rise Against").to_node.to_s
+      end
+    end
+    
+    
+    describe "#binding_for_definition" do
+      it "returns AttributeBinding" do
+        assert_kind_of XML::AttributeBinding, @Band.binding_for_definition(Def.new(:band, :from => "@band"))
+      end
+      
+      it "returns ObjectBinding" do
+        assert_kind_of XML::ObjectBinding, @Band.binding_for_definition(Def.new(:band, :as => Hash))
+      end
+      
+      it "returns TextBinding" do
+        assert_kind_of XML::TextBinding, @Band.binding_for_definition(Def.new(:band, :from => :content))
+      end
+    end
   end
 end
+
 
 class AttributesTest < MiniTest::Spec
   describe ":from => @rel" do
@@ -123,12 +175,6 @@ end
 
 class TypedPropertyTest < MiniTest::Spec
   describe ":as => Item" do
-    class Album
-      include Representable::XML
-      representable_property :band, :as => Band
-      representable_property :label, :as => Label
-    end
-    
     it "#from_xml creates one Item instance" do
       album = Album.from_xml(%{
         <album>
@@ -140,10 +186,8 @@ class TypedPropertyTest < MiniTest::Spec
     
     describe "#to_xml" do
       it "doesn't escape xml from Band#to_xml" do
-        band = Band.new
-        band.name = "Bad Religion"
-        album = Album.new
-        album.band = band
+        band = Band.new("Bad Religion")
+        album = Album.new(band)
         
         assert_xml_equal %{<album>
          <band>
@@ -152,13 +196,15 @@ class TypedPropertyTest < MiniTest::Spec
        </album>}, album.to_xml
       end
       
-      it "doesn't escape and wrap string from Label#to_xml" do
-        album = Album.new
-        album.label = Label.new
+      it "doesn't escape and wrap string from Band#to_node" do
+        band = Band.new("Bad Religion")
+        band.instance_eval do
+          def to_node
+            "<band>Baaaad Religion</band>"
+          end
+        end
         
-        assert_xml_equal %{<album>
-          <label>Fat Wreck</label>
-        </album>}, album.to_xml
+        assert_xml_equal %{<album><band>Baaaad Religion</band></album>}, Album.new(band).to_xml
       end
     end
   end
@@ -166,18 +212,11 @@ end
 
 
 class CollectionTest < MiniTest::Spec
-  describe ":as => [Band], :tag => :band" do
+  describe ":as => Band, :from => :band, :collection => true" do
     class Compilation
       include Representable::XML
       representable_collection :bands, :as => Band, :from => :band
     end
-    
-    describe "#representable_collection" do
-      it "declares a collection" do
-        assert Compilation.representable_attrs.first.array?
-      end
-    end
-    
     
     describe "#from_xml" do
       it "pushes collection items to array" do
@@ -206,12 +245,12 @@ class CollectionTest < MiniTest::Spec
       assert_xml_equal %{<compilation>
         <band><name>Diesel Boy</name></band>
         <band><name>Bad Religion</name></band>
-      </compilation>}, cd.to_xml.to_s
+      </compilation>}, cd.to_xml
     end
   end
     
     
-  describe ":as => []" do
+  describe ":from" do
     class Album
       include Representable::XML
       representable_collection :songs, :from => :song

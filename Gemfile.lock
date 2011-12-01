@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    representable (0.9.3)
+    representable (0.10.0)
       hooks
       json
       nokogiri
@@ -10,7 +10,7 @@ GEM
   remote: http://rubygems.org/
   specs:
     hooks (0.2.0)
-    json (1.6.2)
+    json (1.6.3)
     metaclass (0.0.1)
     minitest (2.8.1)
     mocha (0.10.0)

@@ -1,3 +1,10 @@
+h2. 0.10.0
+
+* Wrapping can now be set through @Representable.representation_wrap=@. Possible values are:
+  * @false@: No wrapping. In XML context, this is undefined behaviour. Default in JSON.
+  * @String@: Wrap with provided string.
+  * @true@: compute wrapper from class name.
+
 h2. 0.9.3
 
 * Removed the @:as => [..]@ syntax in favor of @:array => true@.
