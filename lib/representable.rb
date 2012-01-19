@@ -63,7 +63,7 @@ private
       next if skip_property?(bin, options)
       
       value = send(bin.definition.getter) || bin.definition.default # DISCUSS: eventually move back to Ref.
-      bin.write(doc, value) if value
+      bin.write(doc, value) if value || bin.definition.include_nil
     end
     doc
   end
@@ -110,6 +110,7 @@ private
       #   property :name, :from => :title
       #   property :name, :class => Name
       #   property :name, :default => "Mike"
+      #   property :name, :include_nil => true
       def property(name, options={})
         representable_attrs << definition_class.new(name, options)
       end

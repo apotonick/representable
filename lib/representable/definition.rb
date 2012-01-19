@@ -1,7 +1,8 @@
 module Representable
   # Created at class compile time. Keeps configuration options for one property.
   class Definition
-    attr_reader :name, :sought_type, :from, :default, :representer_module, :attribute
+    attr_reader :name, :sought_type, :from, :default, :representer_module, :attribute,
+                :include_nil
     alias_method :getter, :name
     
     def initialize(sym, options={})
@@ -13,6 +14,7 @@ module Representable
       @default            ||= [] if array?
       @representer_module = options[:extend]  # DISCUSS: move to Representable::DCI?
       @attribute          = options[:attribute] 
+      @include_nil        = options[:include_nil]
     end
 
     def instance_variable_name

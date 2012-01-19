@@ -105,4 +105,16 @@ class DefinitionTest < MiniTest::Spec
       assert_equal "Atheist Peace", @def.default
     end
   end
+
+  describe ":include_nil => true" do
+    it "responds to #include_nil" do
+      @def = Representable::Definition.new(:song)
+      assert_equal nil, @def.include_nil
+    end
+
+    it "accepts a value for #include_nil" do
+      @def = Representable::Definition.new(:song, :include_nil => true)
+      assert_equal true, @def.include_nil
+    end
+  end
 end

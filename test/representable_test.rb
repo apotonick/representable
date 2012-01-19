@@ -203,7 +203,7 @@ class RepresentableTest < MiniTest::Spec
   class PopBand
     include Representable::JSON
     property :name
-    property :groupies
+    property :groupies, :include_nil => true
     attr_accessor :name, :groupies
   end
 
@@ -254,6 +254,13 @@ class RepresentableTest < MiniTest::Spec
     it "accepts :include option" do
       hash = @band.send(:create_representation_with, {}, {:include => [:groupies]}, Representable::JSON)
       assert_equal({"groupies"=>2}, hash)
+    end
+
+    it "includes the beer attribute with value nil" do
+      @band.groupies = nil
+      hash = @band.send(:create_representation_with, {}, {}, Representable::JSON)
+      assert_equal(true, hash.has_key?('groupies'))
+      assert_equal(nil, hash['groupies'])
     end
   end
   
