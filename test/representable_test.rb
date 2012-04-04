@@ -253,6 +253,11 @@ class RepresentableTest < MiniTest::Spec
     it "always returns self" do
       assert_equal @band, @band.update_properties_from({"name"=>"Nofx"}, {}, Representable::JSON)
     end
+
+    it "allows false attributes" do
+      @band.update_properties_from({"groupies"=>false}, {}, Representable::JSON)
+      assert_equal false, @band.groupies
+    end
   end
   
   describe "#create_representation_with" do
@@ -274,6 +279,16 @@ class RepresentableTest < MiniTest::Spec
     it "accepts :include option" do
       hash = @band.send(:create_representation_with, {}, {:include => [:groupies]}, Representable::JSON)
       assert_equal({"groupies"=>2}, hash)
+    end
+
+    it "does not write nil attributes" do
+      @band.groupies = nil
+      assert_equal({"name"=>"No One's Choice"}, @band.send(:create_representation_with, {}, {}, Representable::JSON))
+    end
+
+    it "writes false attributes" do
+      @band.groupies = false
+      assert_equal({"name"=>"No One's Choice","groupies"=>false}, @band.send(:create_representation_with, {}, {}, Representable::JSON))
     end
   end
   
