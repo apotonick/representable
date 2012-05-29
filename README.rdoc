@@ -239,7 +239,7 @@ Representable allows you to skip and include properties when rendering or parsin
   peter.to_json(:include => :forename)
   #=> {"forename":"Peter"}
 
-It gives you convenient +:exclude+ and +:include+ options.
+It gives you convenient +:except+ and +:include+ options.
 
 You can also define conditions on properties on the class layer.
 
