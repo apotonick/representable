@@ -15,7 +15,7 @@ This keeps your representation knowledge in one place when implementing REST ser
 * Bidirectional - rendering and parsing
 * OOP access to documents
 * Support for JSON and XML
-* Coercion support with virtus[https://github.com/solnic/virtus.]
+* Coercion support with virtus[https://github.com/solnic/virtus]
 
 
 == Example
