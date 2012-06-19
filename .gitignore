@@ -5,3 +5,8 @@ doc
 Rake.config
 pkg
 .project
+*.swp
+*.swp
+bin/
+.bundle/
+Gemfile.lock
