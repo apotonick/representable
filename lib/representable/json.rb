@@ -13,49 +13,49 @@ module Representable
       return HashBinding.new(definition)        if definition.hash?
       PropertyBinding.new(definition)
     end
-    
+
     def self.included(base)
       base.class_eval do
         include Representable # either in Hero or HeroRepresentation.
         extend ClassMethods # DISCUSS: do that only for classes?
       end
     end
-    
-    
+
+
     module ClassMethods
       # Creates a new object from the passed JSON document.
       def from_json(*args, &block)
         create_represented(*args, &block).from_json(*args)
       end
-      
+
       def from_hash(*args, &block)
         create_represented(*args, &block).from_hash(*args)
       end
     end
-    
-    
+
+
     # Parses the body as JSON and delegates to #from_hash.
     def from_json(data, *args)
       data = ::JSON[data]
       from_hash(data, *args)
     end
-    
+
     def from_hash(data, options={})
       if wrap = options[:wrap] || representation_wrap
         data = data[wrap.to_s]
       end
-      
+
       update_properties_from(data, options, JSON)
     end
-    
+
     def to_hash(options={})
       hash = create_representation_with({}, options, JSON)
-      
+
       return hash unless wrap = options[:wrap] || representation_wrap
-      
+
       {wrap => hash}
     end
-    
+
     # Returns a JSON string representing this object.
     def to_json(*args)
       to_hash(*args).to_json
