@@ -21,7 +21,7 @@ module Representable::JSON
 
 
     def definition_opts
-      [:_self, :hash => true, :use_attributes => true]
+      [:_self, { :hash => true, :use_attributes => true }]
     end
   end
 end

@@ -21,7 +21,7 @@ module Representable::XML
 
 
     def definition_opts
-      [:_self, :hash => true, :use_attributes => true]
+      [:_self, { :hash => true, :use_attributes => true }]
     end
   end
 
@@ -45,7 +45,7 @@ module Representable::XML
 
 
    def definition_opts
-      [:_self, :hash => true]
+      [:_self, { :hash => true }]
     end
   end
 end

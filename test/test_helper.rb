@@ -10,6 +10,7 @@ require 'minitest/spec'
 require 'minitest/autorun'
 require 'test_xml/mini_test'
 require 'mocha'
+require 'assert_json'
 
 class Album
   attr_accessor :songs, :best_song
@@ -37,5 +38,6 @@ module XmlHelper
 end
 
 MiniTest::Spec.class_eval do
+  include AssertJson
   include XmlHelper
 end
