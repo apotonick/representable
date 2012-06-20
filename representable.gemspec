@@ -13,15 +13,15 @@ Gem::Specification.new do |s|
   s.homepage    = "http://representable.apotomo.de"
   s.summary     = %q{Maps representation documents from and to Ruby objects. Includes XML and JSON support, plain properties, collections and compositions.}
   s.description = %q{Maps representation documents from and to Ruby objects. Includes XML and JSON support, plain properties, collections and compositions.}
-  
+
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
-  
+
   s.add_dependency "nokogiri"
   s.add_dependency "json"
-  
+
   s.add_development_dependency "rake"
   s.add_development_dependency "test_xml"
   s.add_development_dependency "minitest", ">= 2.8.1"

@@ -1,7 +1,6 @@
 require 'bundler'
 Bundler.setup
 
-gem 'minitest'
 require 'representable'
 require 'representable/json'
 require 'representable/xml'
@@ -24,7 +23,7 @@ class Song
   def initialize(name=nil)
     @name = name
   end
-  
+
   def ==(other)
     name == other.name
   end
@@ -36,6 +35,16 @@ module XmlHelper
   end
 end
 
+module AssertJson
+  module Assertions
+    def assert_json(expected, actual, msg=nil)
+      msg = message(msg, "") { diff expected, actual }
+      assert(expected.split("").sort == actual.split("").sort, msg)
+    end
+  end
+end
+
 MiniTest::Spec.class_eval do
+  include AssertJson::Assertions
   include XmlHelper
 end

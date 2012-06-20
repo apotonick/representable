@@ -7,7 +7,7 @@ module Representable::Coercion
       extend ClassMethods
     end
   end
-  
+
   module ClassMethods
     def property(name, args={})
        attribute(name, args[:type]) if args[:type] # FIXME (in virtus): undefined method `superclass' for VirtusCoercionTest::SongRepresenter:Module
