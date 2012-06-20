@@ -28,5 +28,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency "mocha"
   s.add_development_dependency "mongoid"
   s.add_development_dependency "virtus", "~> 0.5.0"
-  s.add_development_dependency "assert_json"
 end
