@@ -19,7 +19,24 @@ module Representable
       end
     end
     
-    
+    module PolymorphicExtender
+      def self.extended(model)
+        representer = representer_name_for(model)
+        if representer
+          model.extend(representer)
+        end
+      end 
+     
+      def self.representer_name_for(model)
+        representer_name = "#{model.class.to_s.split("::").last}Representer"
+        if Object.const_defined?(representer_name)
+          representer_name.constantize
+        else
+          nil
+        end
+      end
+    end
+
     class JSONBinding < Representable::Binding
       def initialize(definition) # FIXME. make generic.
         super

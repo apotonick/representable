@@ -165,6 +165,13 @@ I always wanted to be Peter's bro... in this example it is possible!
   peter.to_json
   #=> {"forename":"Peter","surename":"Pan","origin":{"title":"Neverland"},"features":["stays young","can fly"],"friends":[{"name":"Nick"},{"name":"El"}]}
 
+== Untyped Collections
+
+You have a collection of different class types? The +PolymorphicExtender+ searches for an appropriate representer! So, Peter's friends can be heroes or superheroes.
+
+  module HeroRepresenter
+    collection :friends, :extend => PolymorphicExtender
+  end
 
 == Hashes
 
