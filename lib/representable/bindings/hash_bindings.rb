@@ -28,11 +28,11 @@ module Representable
         deserialize_from(fragment)
       end
       
-      def write(hash, value)
-        hash[definition.from] = serialize_for(value)
+      def write(hash, value, options={})
+        hash[definition.from] = serialize_for(value, options)
       end
       
-      def serialize_for(value)
+      def serialize_for(value, options={})
         serialize(value)
       end
       
@@ -43,8 +43,17 @@ module Representable
     
     
     class CollectionBinding < PropertyBinding
-      def serialize_for(value)
-        value.collect { |obj| serialize(obj) }
+      def serialize_for(value, options={})
+
+
+
+
+        if definition.block
+          value = value.instance_exec(options, &definition.block)
+        end
+
+
+        value.collect { |obj| serialize(obj, options) }
       end
       
       def deserialize_from(fragment)
@@ -54,7 +63,7 @@ module Representable
     
     
     class HashBinding < PropertyBinding
-      def serialize_for(value)
+      def serialize_for(value, options={})
         # requires value to respond to #each with two block parameters.
         {}.tap do |hash|
           value.each { |key, obj| hash[key] = serialize(obj) }

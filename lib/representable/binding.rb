@@ -44,10 +44,12 @@ module Representable
     module Object
       include Binding::Extend  # provides #serialize/#deserialize with extend.
       
-      def serialize(object)
+      def serialize(object, options={})
+        ap object
+        ap serialize_method
         return object if object.nil?
         
-        super(object).send(serialize_method, :wrap => false)
+        super(object).send(serialize_method, options.merge(:wrap => false))
       end
       
       def deserialize(data) 

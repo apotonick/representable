@@ -54,7 +54,7 @@ private
     representable_bindings_for(format).each do |bin|
       next if skip_property?(bin, options)
       
-      compile_fragment(bin, doc)
+      compile_fragment(bin, doc, options)
     end
     doc
   end
@@ -78,11 +78,11 @@ private
   end
   
   # Retrieve value and write fragment to the doc.
-  def compile_fragment(bin, doc)
+  def compile_fragment(bin, doc, options={})
     value = send(bin.definition.getter)
     value = bin.definition.default_for(value)
     
-    write_fragment_for(bin, value, doc)
+    write_fragment_for(bin, value, doc, options)
   end
   
   # Parse value from doc and update the model property.
@@ -97,9 +97,9 @@ private
     send(bin.definition.setter, value)
   end
   
-  def write_fragment_for(bin, value, doc) # DISCUSS: move to Binding?
+  def write_fragment_for(bin, value, doc, options={}) # DISCUSS: move to Binding?
     return if bin.definition.skipable_nil_value?(value)
-    bin.write(doc, value)
+    bin.write(doc, value, options)
   end
   
   def read_fragment_for(bin, doc) # DISCUSS: move to Binding?
@@ -163,8 +163,8 @@ private
       #   property :name, :class => Name
       #   property :name, :default => "Mike"
       #   property :name, :render_nil => true
-      def property(name, options={})
-        representable_attrs << definition_class.new(name, options)
+      def property(name, options={}, &block)
+        representable_attrs << definition_class.new(name, options, &block)
       end
       
       # Declares a represented document node collection.
@@ -174,9 +174,9 @@ private
       #   collection :products
       #   collection :products, :from => :item
       #   collection :products, :class => Product
-      def collection(name, options={})
+      def collection(name, options={}, &block)
         options[:collection] = true
-        property(name, options)
+        property(name, options, &block)
       end
       
       def hash(name=nil, options={})

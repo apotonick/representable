@@ -1,12 +1,13 @@
 module Representable
   # Created at class compile time. Keeps configuration options for one property.
   class Definition
-    attr_reader :name, :options
+    attr_reader :name, :options, :block
     alias_method :getter, :name
     
-    def initialize(sym, options={})
+    def initialize(sym, options={}, &block)
       @name     = sym.to_s
       @options  = options
+      @block    = block
       
       options[:default] ||= [] if array?  # FIXME: move to CollectionBinding!
     end
