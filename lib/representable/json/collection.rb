@@ -19,7 +19,7 @@ module Representable::JSON
     
     def create_representation_with(doc, options, format)
       bin   = representable_bindings_for(format).first
-      bin.serialize_for(self)
+      bin.serialize_for(self, options)
     end
     
     def update_properties_from(doc, options, format)

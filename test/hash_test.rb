@@ -122,7 +122,7 @@ class YamlTest < MiniTest::Spec
       let (:hash_album) { Module.new do
         include Representable::Hash
         collection :songs, :extend => hash_song, :class => Song do |options|
-          self.select { |song| song.name == "Liar" }
+          self.select { |song| song.name == options[:name] }
         end
       end }
 
@@ -133,7 +133,7 @@ class YamlTest < MiniTest::Spec
 
       describe "#to_hash" do
         it "renders collection of typed property" do
-          album.extend(hash_album).to_hash.must_equal("songs" => [{"name" => "Liar", "track" => 1}])
+          album.extend(hash_album).to_hash(name: "Liar").must_equal("songs" => [{"name" => "Liar", "track" => 1}])
         end
       end
 
