@@ -11,8 +11,8 @@ module Representable::JSON
     
     
     module ClassMethods
-      def items(options)
-        collection :_self, options
+      def items(options, &block)
+        collection :_self, options, &block
       end
     end
     
