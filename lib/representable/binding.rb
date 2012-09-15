@@ -11,7 +11,7 @@ module Representable
     end
     
     # Main entry point for rendering/parsing a property object.
-    def serialize(value)
+    def serialize(value, options={})
       value
     end
     
@@ -24,7 +24,7 @@ module Representable
     # at runtime.
     module Extend
       # Extends the object with its representer before serialization.
-      def serialize(object)
+      def serialize(object, options={})
         extend_for(super)
       end
       
@@ -45,8 +45,6 @@ module Representable
       include Binding::Extend  # provides #serialize/#deserialize with extend.
       
       def serialize(object, options={})
-        ap object
-        ap serialize_method
         return object if object.nil?
         
         super(object).send(serialize_method, options.merge(:wrap => false))

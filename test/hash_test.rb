@@ -113,5 +113,38 @@ class YamlTest < MiniTest::Spec
         end
       end
     end
+
+    describe "with :class and :extend and block" do
+      hash_song = hash_representer do 
+        property :name
+        property :track
+      end
+      let (:hash_album) { Module.new do
+        include Representable::Hash
+        collection :songs, :extend => hash_song, :class => Song do |options|
+          self.select { |song| song.name == "Liar" }
+        end
+      end }
+
+      let (:album) { Album.new.tap do |album|
+        album.songs = [Song.new("Liar", 1), Song.new("What I Know", 2)]
+      end }
+
+
+      describe "#to_hash" do
+        it "renders collection of typed property" do
+          album.extend(hash_album).to_hash.must_equal("songs" => [{"name" => "Liar", "track" => 1}])
+        end
+      end
+
+      describe "#from_hash" do
+        it "parses collection of typed property" do
+          album.extend(hash_album).from_hash("songs" => [{"name" => "One Shot Deal", "track" => 4},
+            {"name" => "Three Way Dance", "track" => 5}]).must_equal Album.new([Song.new("One Shot Deal", 4), Song.new("Three Way Dance", 5)])
+        end
+      end
+    end
   end
+
+
 end

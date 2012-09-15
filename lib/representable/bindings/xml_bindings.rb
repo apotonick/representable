@@ -29,7 +29,7 @@ module Representable
         extend ObjectBinding if definition.typed? # FIXME.
       end
       
-      def write(parent, value)
+      def write(parent, value, options={})
         wrap_node = parent
         
         if wrap = definition.options[:wrap]
@@ -118,7 +118,7 @@ module Representable
     
     class AttributeHashBinding < CollectionBinding
       # DISCUSS: use AttributeBinding here?
-      def write(parent, value)  # DISCUSS: is it correct overriding #write here?
+      def write(parent, value, options={})  # DISCUSS: is it correct overriding #write here?
         value.collect do |k, v|
           parent[k] = serialize(v.to_s)
         end
@@ -145,7 +145,7 @@ module Representable
         parent[definition.from] = serialize(value.to_s)
       end
       
-      def write(parent, value)
+      def write(parent, value, options={})
         serialize_for(value, parent)
       end
     end
