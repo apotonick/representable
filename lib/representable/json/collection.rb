@@ -11,15 +11,15 @@ module Representable::JSON
     
     
     module ClassMethods
-      def items(options)
-        collection :_self, options
+      def items(options, &block)
+        collection :_self, options, &block
       end
     end
     
     
     def create_representation_with(doc, options, format)
       bin   = representable_bindings_for(format).first
-      bin.serialize_for(self)
+      bin.serialize_for(self, options)
     end
     
     def update_properties_from(doc, options, format)

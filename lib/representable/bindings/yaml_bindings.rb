@@ -24,7 +24,7 @@ module Representable
         extend ObjectBinding if definition.typed?
       end
       
-      def write(map, value)
+      def write(map, value, options={})
         map.children << Psych::Nodes::Scalar.new(definition.from)
         map.children << serialize_for(value)  # FIXME: should be serialize.
       end
