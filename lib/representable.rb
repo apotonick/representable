@@ -99,6 +99,7 @@ private
   
   def write_fragment_for(bin, value, doc, options={}) # DISCUSS: move to Binding?
     return if bin.definition.skipable_nil_value?(value)
+    options[:self] = self
     bin.write(doc, value, options)
   end
   
