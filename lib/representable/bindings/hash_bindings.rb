@@ -52,8 +52,11 @@ module Representable
           value = value.instance_exec(options, &definition.block)
         end
 
-
-        value.collect { |obj| serialize(obj, options) }
+        if options[:use_as_is][definition.name]
+          serialize(value, options)
+        else
+          value.collect { |obj| serialize(obj, options) }
+        end
       end
       
       def deserialize_from(fragment)
