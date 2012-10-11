@@ -52,7 +52,7 @@ module Representable
           value = value.instance_exec(options, &definition.block)
         end
 
-        if options[:use_as_is][definition.name]
+        if options[:use_as_is].try(:[], definition.name)
           serialize(value, options)
         else
           value.collect { |obj| serialize(obj, options) }
