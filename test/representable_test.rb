@@ -388,7 +388,7 @@ class RepresentableTest < MiniTest::Spec
   describe "Config" do
     before do
       @config = Representable::Config.new
-      PunkRock = Class.new
+      PunkRock = Class.new unless defined? PunkRock
     end
     
     describe "wrapping" do
