@@ -24,11 +24,11 @@ module Representable
     end
     
     def array?
-      options[:collection]
+      !!options[:collection]
     end
     
     def hash?
-      options[:hash]
+      !!options[:hash]
     end
     
     def sought_type
