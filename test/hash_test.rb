@@ -126,8 +126,8 @@ class YamlTest < MiniTest::Spec
       wrapped     = Representable::Hash::Binding.new(definition)
 
       wrapped.name.must_equal "name"
-      wrapped.hash?.must_equal nil
-      wrapped.array?.must_equal nil
+      wrapped.hash?.must_equal false
+      wrapped.array?.must_equal false
       wrapped.options.must_equal({})
 
       #wrapped.
