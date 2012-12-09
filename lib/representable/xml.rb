@@ -32,7 +32,7 @@ module Representable
     
     
     def from_xml(doc, *args)
-      node = Nokogiri::XML(doc).root
+      node = Nokogiri::XML(doc).remove_namespaces!.root
       from_node(node, *args)
     end
     

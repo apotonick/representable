@@ -79,6 +79,18 @@ class XmlTest < MiniTest::Spec
         assert_equal ["Nofx", "NOFX"], [@band.name, @band.label]
       end
     end
+
+    describe "#from_xml with xmlns present" do
+      before do
+        @band = @Band.new
+        @xml = %{<band xmlns="exists"><name>Nofx</name><label>NOFX</label></band>}
+      end
+      
+      it "parses with xmlns present" do
+        @band.from_xml(@xml)
+        assert_equal ["Nofx", "NOFX"], [@band.name, @band.label]
+      end
+    end
     
     
     describe "#from_node" do
