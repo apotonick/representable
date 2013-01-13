@@ -378,7 +378,34 @@ class CollectionTest < MiniTest::Spec
       end
     end
   end
-  
+
+  require 'representable/xml/collection'
+  class CollectionRepresenterTest < MiniTest::Spec
+    module SongRepresenter
+      include Representable::XML
+      property :name
+    end
+
+    describe "XML::Collection" do
+      describe "with contained objects" do
+        before do
+          @songs_representer = Module.new do
+            include Representable::XML::Collection
+            items :class => Song, :extend => SongRepresenter, :wrap => :songs
+          end
+        end
+
+        it "renders objects with #to_xml" do
+          assert_json "<songs><song><name>Days Go By</name></song><song><name>Can't Take Them All</name></song></songs>", [Song.new("Days Go By"), Song.new("Can't Take Them All")].extend(@songs_representer).to_xml
+        end
+
+        it "returns objects array from #from_xml" do
+          assert_equal [Song.new("Days Go By"), Song.new("Can't Take Them All")], [].extend(@songs_representer).from_xml("<songs><song><name>Days Go By</name></song><song><name>Can't Take Them All</name></song></songs>")
+        end
+      end
+    end
+  end
+
   require 'representable/xml/hash'
   describe "XML::AttributeHash" do  # TODO: move to HashTest.
     before do
