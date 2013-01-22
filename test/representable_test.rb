@@ -321,6 +321,24 @@ class RepresentableTest < MiniTest::Spec
       assert_equal({"name" => "Iron Maiden"}, hash)
     end
 
+    describe "the proc option" do
+      it "gets values from the object" do
+        @band = Class.new(Band) { property :quote, :proc => Proc.new {|band| band.name + " turns it up to 11"  }}.new
+        @band.name = "Spinal Tap"
+
+        hash = @band.send(:create_representation_with, {}, {}, Representable::Hash::PropertyBinding)
+        assert_equal({"quote" => "Spinal Tap turns it up to 11"}, hash)
+      end
+
+      it "overrides the name getter when used" do
+        @band = Class.new(Band) { property :name, :proc => Proc.new {|band| "Justin Beiber" }}.new
+        @band.name = "Spinal Tap"
+
+        hash = @band.send(:create_representation_with, {}, {}, Representable::Hash::PropertyBinding)
+        assert_equal({"name" => "Justin Beiber"}, hash)
+      end
+    end
+
     it "does not write nil attributes" do
       @band.groupies = nil
       assert_equal({"name"=>"No One's Choice"}, @band.send(:create_representation_with, {}, {}, Representable::Hash::PropertyBinding))

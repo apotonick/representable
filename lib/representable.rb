@@ -87,7 +87,7 @@ private
   
   # Retrieve value and write fragment to the doc.
   def compile_fragment(bin, doc)
-    value = send(bin.getter)
+    value = bin.proc ? bin.proc.call(self) : send(bin.getter)
     
     bin.write_fragment(doc, value)
   end

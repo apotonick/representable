@@ -181,6 +181,15 @@ class DefinitionTest < MiniTest::Spec
 
   end
 
+  describe '#proc' do
+    it 'returns nil if unset' do
+      assert_equal nil, Representable::Definition.new(:song).proc
+    end
+
+    it 'returns a proc if set' do
+      assert Representable::Definition.new(:song, :proc => Proc.new {|song| song}).proc
+    end
+  end
 
   describe ":collection => true" do
     before do
