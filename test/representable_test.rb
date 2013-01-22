@@ -437,6 +437,26 @@ class RepresentableTest < MiniTest::Spec
       end
     end
 
+    describe "property with :name" do
+      before do
+        @band = Class.new(Band) {
+            attr_accessor :groupies
+        }.new
+        @band.groupies = 2
+      end
+      representer! do
+        property :fans, :name => :groupies
+      end
+
+      it "sets the key to the original name, and uses the new name as the getter" do
+        assert_equal({"fans" => 2}, @band.extend(representer).to_hash)
+      end
+      it "uses the new name and translates that into the original name" do
+        @band.extend(representer).from_hash({"fans"=> 4})
+        assert_equal(4, @band.groupies)
+      end
+    end
+
     describe "property with :extend" do
       representer! do
         property :name, :extend => lambda { |name| name.is_a?(UpcaseString) ? UpcaseRepresenter : DowncaseRepresenter }, :class => String

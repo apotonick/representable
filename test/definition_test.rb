@@ -31,12 +31,24 @@ class DefinitionTest < MiniTest::Spec
       end
     end
     
-    it "responds to #getter and returns string" do
-      assert_equal "songs", @def.getter
+    describe '#getter' do
+      it "returns the name" do
+        assert_equal "songs", @def.getter
+      end
+
+      it "returns the new name when :name is redefined" do
+        assert_equal "tracks", Representable::Definition.new(:songs, :name => :tracks).getter
+      end
     end
     
-    it "responds to #name" do
-      assert_equal "songs", @def.name 
+    describe "#name" do
+      it "returns the :name" do
+        assert_equal "songs", @def.name
+      end
+
+      it "allows redefinition of name" do
+        assert_equal "tracks", Representable::Definition.new(:songs, :name => :tracks).name
+      end
     end
     
     it "responds to #setter" do
@@ -45,6 +57,20 @@ class DefinitionTest < MiniTest::Spec
     
     it "responds to #sought_type" do
       assert_equal nil, @def.sought_type
+    end
+
+    describe '#from' do
+      it 'returns the :from value' do
+          assert_equal "tracks", Representable::Definition.new(:songs, :from => :tracks).from
+      end
+
+      it 'returns the original @name when :name is redifined' do
+          assert_equal "songs", Representable::Definition.new(:songs, :name => :tracks).from
+      end
+
+      it 'returns the :from value when :name is redifined' do
+          assert_equal "beats", Representable::Definition.new(:beats, :name => :tracks, :from => :beats).from
+      end
     end
     
     describe "#clone" do

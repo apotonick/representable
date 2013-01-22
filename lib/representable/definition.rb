@@ -2,7 +2,6 @@ module Representable
   # Created at class compile time. Keeps configuration options for one property.
   class Definition
     attr_reader :name, :options
-    alias_method :getter, :name
     
     def initialize(sym, options={})
       @name     = sym.to_s
@@ -12,13 +11,18 @@ module Representable
     end
     
     def clone
-      self.class.new(name, options.clone) # DISCUSS: make generic Definition.cloned_attribute that passes list to constructor.
+      self.class.new(@name, options.clone) # DISCUSS: make generic Definition.cloned_attribute that passes list to constructor.
     end
 
     def setter
       :"#{name}="
     end
     
+    def name
+      (options[:name] || @name).to_s
+    end
+    alias_method :getter, :name
+
     def typed?
       sought_type.is_a?(Class) or representer_module or options[:instance]  # also true if only :extend is set, for people who want solely rendering.
     end
@@ -36,7 +40,7 @@ module Representable
     end
     
     def from
-      (options[:from] || name).to_s
+      (options[:from] || @name).to_s
     end
     
     def default_for(value)
