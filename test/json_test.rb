@@ -285,6 +285,24 @@ module JsonTest
       end
     end
 
+    describe ":as => :songName" do
+      class Song
+        include Representable::JSON
+        property :name, :as => :songName
+        attr_accessor :name
+      end
+
+      it "respects :as in #from_json" do
+        song = Song.from_json({:songName => "Run To The Hills"}.to_json)
+        assert_equal "Run To The Hills", song.name
+      end
+
+      it "respects :as in #to_json" do
+        song = Song.new; song.name = "22 Acacia Avenue"
+        assert_json '{"songName":"22 Acacia Avenue"}', song.to_json
+      end
+    end
+
     describe ":default => :value" do
       before do
         @Album = Class.new do

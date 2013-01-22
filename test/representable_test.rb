@@ -161,6 +161,11 @@ class RepresentableTest < MiniTest::Spec
         band = Class.new(Band) { property :friends, :from => :friend }
         assert_equal "friend", band.representable_attrs.last.from
       end
+
+      it "can be set explicitly with as" do
+        band = Class.new(Band) { property :friends, :as => :friend }
+        assert_equal "friend", band.representable_attrs.last.from
+      end
       
       it "is infered from the name implicitly" do
         band = Class.new(Band) { property :friends }
