@@ -454,8 +454,7 @@ Since representable-1.2 `false` values _are_ considered when parsing and renderi
 
 If you want `nil` values to be included when rendering, use the `:render_nil` option.
 
-  property :track, render_nil: true
-
+    property :track, render_nil: true
 
 ## Coercion
 
