@@ -32,6 +32,7 @@ class VirtusCoercionTest < MiniTest::Spec
         property :track,        :type => Integer
 
         def track=(track_number)
+          # Not very elegant, but this is just a quick demo
           track_number = attribute_set[:track].coerce(track_number)
           track_number = 1 if track_number < 0
           super(track_number)
