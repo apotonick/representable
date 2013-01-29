@@ -10,6 +10,7 @@ class DefinitionTest < MiniTest::Spec
       it "responds to #representer_module" do
         assert_equal nil, Representable::Definition.new(:song).representer_module
         assert_equal Hash, Representable::Definition.new(:song, :extend => Hash).representer_module
+        assert_equal Hash, Representable::Definition.new(:song, :extend => 'Hash').representer_module
       end
     end
     
@@ -199,29 +200,39 @@ class DefinitionTest < MiniTest::Spec
       assert_equal [], @def.send(:default)
     end
   end
-  
+
   describe ":class => Item" do
     before do
       @def = Representable::Definition.new(:songs, :class => Hash)
     end
-    
+
     it "responds to #sought_type" do
       assert_equal Hash, @def.sought_type
     end
   end
-  
+
+  describe ":class => 'Item'" do
+    before do
+      @def = Representable::Definition.new(:songs, :class => 'Hash')
+    end
+
+    it "responds to #sought_type" do
+      assert_equal Hash, @def.sought_type
+    end
+  end
+
   describe ":default => value" do
     it "responds to #default" do
       @def = Representable::Definition.new(:song)
       assert_equal nil, @def.send(:default)
     end
-    
+
     it "accepts a default value" do
       @def = Representable::Definition.new(:song, :default => "Atheist Peace")
       assert_equal "Atheist Peace", @def.send(:default)
     end
   end
-  
+
   describe ":hash => true" do
     before do
       @def = Representable::Definition.new(:songs, :hash => true)
