@@ -63,5 +63,17 @@ module Representable
     def default
       options[:default]
     end
+
+    def binding
+      options[:binding]
+    end
+
+    def has_binding?
+      options.has_key?(:binding)
+    end
+
+    def instantiate_binding *args
+      binding.new(self, *args)
+    end
   end
 end

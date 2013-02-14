@@ -141,6 +141,12 @@ class XmlTest < MiniTest::Spec
       it "returns HashBinding" do
         assert_kind_of XML::HashBinding, XML::PropertyBinding.build_for(Def.new(:band, :hash => :true), nil)
       end
+
+      it "returns custom bindings" do
+        binding = mock
+        binding.expects(:new).with(anything,:args).returns(:instantiated_binding)
+        assert_equal :instantiated_binding, XML::PropertyBinding.build_for(Def.new(:band, :binding => binding), :args)
+      end
     end
     
     

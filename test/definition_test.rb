@@ -181,6 +181,23 @@ class DefinitionTest < MiniTest::Spec
 
   end
 
+  describe "#has_binding?" do
+    it "returns true when :binding is set" do
+      assert_equal true, Representable::Definition.new(:songs, :binding => Object).has_binding?
+    end
+
+    it "returns false when :binding is not set" do
+      assert_equal false, Representable::Definition.new(:songs).has_binding?
+    end
+  end
+
+  describe "#instantiate_binding" do
+    it "instantiates the specified binding" do
+      binding = mock
+      binding.expects(:new).with(kind_of(Representable::Definition),:passed_args).returns(:instantiated_binding).once
+      assert_equal :instantiated_binding, Representable::Definition.new(:songs, :binding => binding).instantiate_binding(:passed_args)
+    end
+  end
 
   describe ":collection => true" do
     before do
@@ -230,6 +247,16 @@ class DefinitionTest < MiniTest::Spec
     it "responds to #hash?" do
       assert @def.hash?
       assert ! Representable::Definition.new(:songs).hash?
+    end
+  end
+
+  describe ":binding => Object" do
+    subject do
+      Representable::Definition.new(:songs, :binding => Object)
+    end
+
+    it "responds to #binding" do
+      assert_equal subject.binding, Object
     end
   end
 end

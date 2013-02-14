@@ -25,6 +25,7 @@ module Representable
     
     class PropertyBinding < Binding
       def self.build_for(definition, *args)
+        return definition.instantiate_binding(*args)         if definition.has_binding?
         return CollectionBinding.new(definition, *args)      if definition.array?
         return HashBinding.new(definition, *args)            if definition.hash? and not definition.options[:use_attributes] # FIXME: hate this.
         return AttributeHashBinding.new(definition, *args)   if definition.hash? and definition.options[:use_attributes]

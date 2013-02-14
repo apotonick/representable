@@ -9,7 +9,7 @@ require 'test/unit'
 require 'minitest/spec'
 require 'minitest/autorun'
 require 'test_xml/mini_test'
-require 'mocha'
+require 'mocha/setup'
 
 class Album
   attr_accessor :songs, :best_song

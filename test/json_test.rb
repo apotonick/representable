@@ -142,6 +142,12 @@ module JsonTest
         it "returns CollectionBinding" do
           assert_kind_of Representable::Hash::CollectionBinding, Representable::Hash::PropertyBinding.build_for(Def.new(:band, :collection => true), nil)
         end
+
+        it "returns custom bindings" do
+          binding = mock
+          binding.expects(:new).with(anything,:args).returns(:instantiated_binding)
+          assert_equal :instantiated_binding, Representable::Hash::PropertyBinding.build_for(Def.new(:band, :binding => binding), :args)
+        end
       end
 
       describe "#representable_bindings_for" do
