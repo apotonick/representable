@@ -115,7 +115,7 @@ private
 
 private
   def cleanup_options(options) # TODO: remove me.
-    options.reject { |k,v| [:include, :exclude].include?(k) }
+    options.to_hash.reject { |k,v| [:include, :exclude].include?(k) }
   end
   
   module ClassInclusions
