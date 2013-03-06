@@ -20,12 +20,13 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   
   s.add_dependency "nokogiri"
-  s.add_dependency "json"
-  
+  s.add_dependency "multi_json"
+
   s.add_development_dependency "rake"
   s.add_development_dependency "test_xml"
   s.add_development_dependency "minitest", ">= 2.8.1"
   s.add_development_dependency "mocha", ">= 0.13.0"
   s.add_development_dependency "mongoid"
   s.add_development_dependency "virtus", "~> 0.5.0"
+  s.add_development_dependency "yajl-ruby"
 end
