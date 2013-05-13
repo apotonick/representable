@@ -1,8 +1,6 @@
 require 'representable'
 require 'representable/json'
 require 'representable/xml'
-require 'test/unit'
-require 'minitest/spec'
 require 'minitest/autorun'
 require 'test_xml/mini_test'
 require 'mocha/setup'
