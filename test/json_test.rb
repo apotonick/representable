@@ -520,6 +520,26 @@ end
     end
   end
 
+  class CollectionRepresenterTest < MiniTest::Spec
+    describe "JSON#collection_wrapper" do
+      describe "with contained objects" do
+        before do
+          @song_representer = Module.new do
+            include Representable::JSON
+            property :name
+          end
+        end
+
+        it "renders objects with #to_json" do
+          assert_json "[{\"name\":\"Days Go By\"},{\"name\":\"Can't Take Them All\"}]", [Song.new("Days Go By"), Song.new("Can't Take Them All")].extend(@song_representer.collection_wrapper).to_json
+        end
+
+        it "returns objects array from #from_json" do
+          assert_equal [Song.new("Days Go By"), Song.new("Can't Take Them All")], [].extend(@song_representer.collection_wrapper(:class => Song)).from_json("[{\"name\":\"Days Go By\"},{\"name\":\"Can't Take Them All\"}]")
+        end
+      end
+    end
+  end
 
   require 'representable/json/hash'
   class HashRepresenterTest < MiniTest::Spec

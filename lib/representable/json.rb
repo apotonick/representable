@@ -21,6 +21,14 @@ module Representable
       def from_json(*args, &block)
         create_represented(*args, &block).from_json(*args)
       end
+
+      def collection_wrapper opions = {}
+        representer = self
+        Module.new do
+          include Representable::JSON::Collection
+          items({:extend => representer}.merge(opions))
+        end
+      end
     end
     
     
