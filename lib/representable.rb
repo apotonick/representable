@@ -133,6 +133,11 @@ private
       super
       base.representable_attrs.inherit(representable_attrs)
     end
+
+    def inherited(base)
+      super
+      base.representable_attrs.inherit(representable_attrs)
+    end
   end
 
   module ModuleExtensions

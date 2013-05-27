@@ -753,14 +753,21 @@ class RepresentableTest < MiniTest::Spec
         collection :songs, :class => Song, :extend => SongRepresentation
       end
 
+      class InheritedAlbumRepresentation < AlbumRepresentation; end
+
       let (:song) { Song.new("Mama, I'm Coming Home") }
       let (:album) { Album.new([song]) }
       let (:decorator) { AlbumRepresentation.new(album) }
+      let (:inherited_decorator) { InheritedAlbumRepresentation.new(album) }
 
       it "renders" do
         decorator.to_hash.must_equal({"songs"=>[{"name"=>"Mama, I'm Coming Home"}]})
         album.wont_respond_to :to_hash
         song.wont_respond_to :to_hash # DISCUSS: weak test, how to assert blank slate?
+      end
+
+      it "renders with inhereted decorator" do
+        inherited_decorator.to_hash.must_equal({"songs"=>[{"name"=>"Mama, I'm Coming Home"}]})
       end
 
       it "parses" do
