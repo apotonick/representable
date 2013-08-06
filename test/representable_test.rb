@@ -452,6 +452,29 @@ class RepresentableTest < MiniTest::Spec
       end
     end
 
+    {
+      :hash => [Representable::Hash, {"songs"=>[{"name"=>"Alive"}]}, {"songs"=>[{"name"=>"You've Taken Everything"}]}],
+      :json => [Representable::JSON, "{\"songs\":[{\"name\":\"Alive\"}]}", "{\"songs\":[{\"name\":\"You've Taken Everything\"}]}"],
+      :xml  => [Representable::XML, "<open_struct>\n  <song>\n    <name>Alive</name>\n  </song>\n</open_struct>", "<open_struct><song><name>You've Taken Everything</name></song></open_struct>", { :from => :song }],
+      :yaml => [Representable::YAML, "---\nsongs:\n- name: Alive\n", "---\nsongs:\n- name: You've Taken Everything\n"],
+    }.each do |format, cfg|
+      mod, output, input, collection_options = cfg
+      collection_options ||= {}
+
+      describe "[#{format}] collection with :class" do
+        let (:request) { representer.prepare(OpenStruct.new(:songs => [song])) }
+
+        representer!(mod) do
+          collection :songs, collection_options.merge(:class => Song) do
+            property :name
+          end
+        end
+
+        it { request.send("to_#{format}").must_equal output }
+        it { request.send("from_#{format}", input).songs.first.name.must_equal "You've Taken Everything"}
+      end
+    end
+
     describe "without :class" do
       representer! do
         property :song do

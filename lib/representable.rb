@@ -127,9 +127,9 @@ private
       #   collection :products
       #   collection :products, :from => :item
       #   collection :products, :class => Product
-      def collection(name, options={})
+      def collection(name, options={}, &block)
         options[:collection] = true
-        property(name, options)
+        property(name, options, &block)
       end
 
       def hash(name=nil, options={})
