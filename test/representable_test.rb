@@ -519,6 +519,10 @@ class RepresentableTest < MiniTest::Spec
         Class.new(Representable::Decorator) do
           include Representable::Hash
 
+          # This property is here to ensure that property definitions aren't
+          # inherited by the inline decorator.
+          property :title
+
           property :song, :class => Song do
             property :name
           end
@@ -527,12 +531,20 @@ class RepresentableTest < MiniTest::Spec
         end
       end
 
+      let(:generated_song_representer) do
+        representer.representable_attrs.find { |attr| attr.name == 'song' }.options[:extend]
+      end
+
       it { request.to_hash.must_equal({"song"=>{"name"=>"Alive"}}) }
       it { request.from_hash({"song"=>{"name"=>"You've Taken Everything"}}).song.name.must_equal "You've Taken Everything"}
 
       it "uses an inline decorator" do
         request.to_hash
         song.wont_be_kind_of Representable
+      end
+
+      it 'does not inherit properties from the enclosing class' do
+        generated_song_representer.representable_attrs.map(&:name).wont_include('title')
       end
     end
   end

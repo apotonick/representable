@@ -8,7 +8,10 @@ module Representable
     end
 
     def self.inline_representer(base_module, &block) # DISCUSS: separate module?
-      Class.new(self) do
+      # "self" is the enclosing decorator class. self.superclass ensures that
+      # this inline decorator is based one the same class as the enclosing
+      # decorator.
+      Class.new(self.superclass) do
         include base_module
         instance_exec &block
       end
