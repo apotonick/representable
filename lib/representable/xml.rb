@@ -35,9 +35,14 @@ module Representable
       end
     end
 
+    def remove_namespaces?
+      representable_attrs.remove_namespaces
+    end
 
     def from_xml(doc, *args)
-      node = Nokogiri::XML(doc).root
+      node = remove_namespaces? ?
+        Nokogiri::XML(doc).remove_namespaces!.root :
+        Nokogiri::XML(doc).root
       from_node(node, *args)
     end
 

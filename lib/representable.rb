@@ -105,6 +105,10 @@ private
         representable_attrs.wrap = name
       end
 
+      def remove_namespaces!
+        representable_attrs.remove_namespaces = true
+      end
+
       # Declares a represented document node, which is usually a XML tag or a JSON key.
       #
       # Examples:

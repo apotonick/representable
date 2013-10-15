@@ -32,6 +32,7 @@ module Representable
     end
 
     attr_accessor :wrap
+    attr_accessor :remove_namespaces
 
     # Computes the wrap string or returns false.
     def wrap_for(name)

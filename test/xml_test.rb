@@ -80,6 +80,18 @@ class XmlTest < MiniTest::Spec
       end
     end
 
+    describe "#from_xml with remove_namespaces! and xmlns present" do
+      before do
+        @Band.remove_namespaces!
+        @band = @Band.new
+        @xml = %{<band xmlns="exists"><name>Nofx</name><label>NOFX</label></band>}
+      end
+
+      it "parses with xmlns present" do
+        @band.from_xml(@xml)
+        assert_equal ["Nofx", "NOFX"], [@band.name, @band.label]
+      end
+    end
 
     describe "#from_node" do
       before do
