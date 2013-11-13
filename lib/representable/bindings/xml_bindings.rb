@@ -11,6 +11,7 @@ module Representable
         return HashBinding.new(definition, *args)            if definition.hash? and not definition.options[:use_attributes] # FIXME: hate this.
         return AttributeHashBinding.new(definition, *args)   if definition.hash? and definition.options[:use_attributes]
         return AttributeBinding.new(definition, *args)       if definition.attribute
+        return ContentBinding.new(definition, *args)         if definition.content
         new(definition, *args)
       end
 
@@ -147,6 +148,21 @@ module Representable
 
       def serialize_for(value, parent)
         parent[from] = serialize(value.to_s)
+      end
+
+      def write(parent, value)
+        serialize_for(value, parent)
+      end
+    end
+
+    # Represents tag content.
+    class ContentBinding < PropertyBinding
+      def read(node)
+        node.content
+      end
+
+      def serialize_for(value, parent)
+        parent.content = serialize(value.to_s)
       end
 
       def write(parent, value)

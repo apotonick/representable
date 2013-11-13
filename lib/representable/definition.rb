@@ -57,6 +57,10 @@ module Representable
       options[:attribute]
     end
 
+    def content
+      options[:content]
+    end
+
     def skipable_nil_value?(value)
       value.nil? and not options[:render_nil]
     end

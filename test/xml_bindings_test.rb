@@ -150,4 +150,20 @@ class XMLBindingTest < MiniTest::Spec
       end
     end
   end
+
+  describe "ContentBinding" do
+    before do
+      @property = Representable::XML::ContentBinding.new(Representable::Definition.new(:name, :content => true), nil)
+    end
+    
+    it "extracts with #read" do
+      assert_equal "The Gargoyle", @property.read(Nokogiri::XML("<song>The Gargoyle</song>").root)
+    end
+    
+    it "inserts with #write" do
+      parent = Nokogiri::XML::Node.new("song", @doc)
+      @property.write(parent, "The Gargoyle")
+      assert_xml_equal("<song>The Gargoyle</song>", parent.to_s)
+    end
+  end
 end
