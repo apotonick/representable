@@ -796,16 +796,16 @@ Coercing values only happens when rendering or parsing a document. Representable
 
 ## Undocumented Features
 
-(Please don't read this section!)
+*(Please don't read this section!)*
 
-* If you need a special binding for a property you're free to create it using the `:binding` option.
+#### If you need a special binding for a property you're free to create it using the `:binding` option.
 
 <!-- here comes some code -->
 ```ruby
 property :title, :binding => lambda { |*args| JSON::TitleBinding.new(*args) }
 ```
 
-* You can use the parsed document fragment directly as a representable instance by returning `nil` in `:class`.
+#### You can use the parsed document fragment directly as a representable instance by returning `nil` in `:class`.
 
 <!-- here comes some code -->
 ```ruby
@@ -821,7 +821,7 @@ hit.from_hash(song: <#Song ..>)
 
 Representable will not attempt to create a `Song` instance for you but use the provided from the document.
 
-* The same goes the other way when rendering. Just provide an empty `:instance` block.
+#### The same goes the other way when rendering. Just provide an empty `:instance` block.
 
 <!-- here comes some code -->
 ```ruby
