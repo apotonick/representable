@@ -32,12 +32,9 @@ module Representable
       # TODO: this used to be handled in #serialize where Object added it's behaviour. treat scalars as objects to remove this switch:
       return fragment unless @binding.typed?
 
-      if @binding.sync?
-        # TODO: this is also done when instance: { nil }
-        @object = @object.call # call Binding#get or Binding#get[i]
-      else
-        @object = @binding.create_object(fragment)
-      end
+      # If syncing, get the existing object (Binding#get or Binding#get[i]),
+      # If not syncing (or if the existing object is nil) create a new object.
+      @object = (@object.call if @binding.sync?) || @binding.create_object(fragment)
 
       # DISCUSS: what parts should be in this class, what in Binding?
       representable = prepare(@object)
