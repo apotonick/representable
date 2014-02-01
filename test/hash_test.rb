@@ -32,6 +32,10 @@ class HashTest < MiniTest::Spec
       it "parses plain property" do
         album.extend(hash).from_hash("best_song" => "This Song Is Recycled").best_song.must_equal "This Song Is Recycled"
       end
+
+      it "take hash with symbols" do
+        album.extend(hash).from_hash(best_song: "This Song Is Recycled").best_song.must_equal "This Song Is Recycled"
+      end
     end
 
 

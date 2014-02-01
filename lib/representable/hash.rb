@@ -31,6 +31,8 @@ module Representable
         data = data[wrap.to_s]
       end
 
+      convert_keys_to_string(data)
+
       update_properties_from(data, options, binding_builder)
     end
 
@@ -40,6 +42,14 @@ module Representable
       return hash unless wrap = options[:wrap] || representation_wrap
 
       {wrap => hash}
+    end
+
+    private
+
+    def convert_keys_to_string(hash)
+      hash.tap do |h|
+        h.keys.each { |k| h[k.to_s] = h.delete(k) }
+      end
     end
   end
 end
