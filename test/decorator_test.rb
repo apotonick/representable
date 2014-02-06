@@ -52,4 +52,31 @@ class DecoratorTest < MiniTest::Spec
       AlbumRepresentation.prepare(album).decorated.must_equal album
     end
   end
+
+  describe ".superclass_for_inline_representer" do
+    class BaseClass < Representable::Decorator
+      include Representable::JSON
+      property :nested do
+        property :name
+      end
+    end
+
+    it "defaults to class if no existing attribute exists" do
+      BaseClass.superclass_for_inline_representer(
+        :new_attribute, :inherit => true
+      ).must_equal BaseClass
+    end
+
+    it "uses the current class if attribute exists and :inherit => false" do
+      BaseClass.superclass_for_inline_representer(
+        :nested, :inherit => false
+      ).must_equal BaseClass
+    end
+
+    it "uses the class of the existing attribute" do
+      BaseClass.superclass_for_inline_representer(
+        :nested, :inherit => true
+      ).must_equal BaseClass.representable_attrs[:nested].representer_module
+    end
+  end
 end
