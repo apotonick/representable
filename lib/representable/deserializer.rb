@@ -39,6 +39,8 @@ module Representable
         @object = @binding.create_object(fragment)
       end
 
+      return if @binding.options[:ignore_nil_instance] && @object == fragment
+
       # DISCUSS: what parts should be in this class, what in Binding?
       representable = prepare(@object)
       deserialize(representable, fragment, @binding.user_options)
