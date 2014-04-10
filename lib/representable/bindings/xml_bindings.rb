@@ -23,6 +23,9 @@ module Representable
         end
 
         wrap_node << serialize_for(value, parent)
+        add_wrap_attributes_to(wrap_node)
+
+        wrap_node
       end
 
       def read(node)
@@ -79,6 +82,10 @@ module Representable
         return node if typed?
 
         node.content
+      end
+
+      def add_wrap_attributes_to(node)
+        self[:wrap_attributes].each { |name, value| node[name] = value } if self[:wrap_attributes]
       end
     end
 
