@@ -2,7 +2,8 @@ require "virtus"
 
 module Representable::Coercion
   class Coercer
-    include Virtus
+    virtus_coercer = Virtus.respond_to?(:model) ? Virtus.model : Virtus
+    include virtus_coercer
 
     def coerce(name, v) # TODO: test me.
       # set and get the value as i don't know where exactly coercion happens in virtus.
