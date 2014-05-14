@@ -502,6 +502,30 @@ end
       end
     end
 
+  require 'representable/json/auto_collection'
+  class CollectionRepresenterTest < MiniTest::Spec
+    describe "JSON::AutoCollection" do
+      describe "with contained objects" do
+        before do
+          @songs_representer = Module.new do
+            include Representable::JSON::AutoCollection
+            items :class => Song do
+              include Representable::JSON
+              property :name
+            end
+          end
+        end
+
+        it "renders objects with #to_json" do
+          assert_json "[{\"name\":\"Days Go By\"},{\"name\":\"Can't Take Them All\"}]", [Song.new("Days Go By"), Song.new("Can't Take Them All")].extend(@songs_representer).to_json
+        end
+
+        it "returns objects array from #from_json" do
+          assert_equal [Song.new("Days Go By"), Song.new("Can't Take Them All")], [].extend(@songs_representer).from_json("[{\"name\":\"Days Go By\"},{\"name\":\"Can't Take Them All\"}]")
+        end
+      end
+    end
+  end
 
     describe "JSON::Hash" do  # TODO: move to HashTest.
       describe "with contained objects" do
