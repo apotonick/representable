@@ -1,3 +1,7 @@
+# Next
+
+* Add support for Rubinius.
+
 # 1.8.1
 
 * Add `:serialize` and `:deserialize` options for overriding those steps.
