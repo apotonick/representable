@@ -29,6 +29,8 @@ module Representable
       # what if create_object is responsible for providing the deserialize-to object?
       object = @binding.create_object(fragment, *args) # customize with :instance and :class.
 
+      return if @binding.options[:ignore_nil_instance] && @object == fragment
+
       # DISCUSS: what parts should be in this class, what in Binding?
       representable = prepare(object) # customize with :prepare and :extend.
 

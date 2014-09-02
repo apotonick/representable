@@ -382,6 +382,17 @@ class RepresentableTest < MiniTest::Spec
         song.name.must_equal obj
         song.name.must_be_kind_of mod
       end
+
+      describe "with :ignore_nil_instance set and the instance being nil" do
+        representer! do
+          property :name, :extend => mod, :instance => lambda { |*| nil }, :ignore_nil_instance => true
+        end
+
+        it "does not evaluate the property" do
+          song = Song.new.extend(representer).from_hash("name" => "Eric's Had A Bad Day")
+          song.name.must_be_nil
+        end
+      end
     end
 
     describe "property with :extend" do
