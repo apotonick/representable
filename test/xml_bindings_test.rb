@@ -1,5 +1,5 @@
 require 'test_helper'
-require 'representable/json'  # FIXME.
+require 'representable/json' # FIXME.
 require 'representable/xml/collection'
 require 'representable/xml/hash'
 
@@ -105,6 +105,22 @@ class XMLBindingTest < MiniTest::Spec
         assert_equal "name", @doc.children.first.children.first.name
       end
     end
+
+    describe "with objects with wrapped element attributes" do
+      before do
+        @property = Representable::XML::PropertyBinding.new(Representable::Definition.new(:song, :collection => true, :class => SongWithRepresenter, :wrap => :doc, :wrap_attributes => {:foo => :bar}), nil, nil)
+      end
+
+      it "inserts with #write" do
+        @property.write(@doc, @song)
+        assert_xml_equal("<doc foo=\"bar\"><song><name>Thinning the Herd</name></song></doc>", @doc.to_s)
+        assert_kind_of Nokogiri::XML::Node, @doc.children.first
+        assert_equal "doc", @doc.children.first.name
+        assert_equal "bar", @doc.children.first["foo"]
+        assert_equal "song", @doc.children.first.children.first.name
+        assert_equal "name", @doc.children.first.children.first.children.first.name
+      end
+    end
   end
 
 
@@ -115,12 +131,12 @@ class XMLBindingTest < MiniTest::Spec
       end
 
       it "extracts with #read" do
-        assert_equal({"first" => "The Gargoyle", "second" => "Bronx"} , @property.read(Nokogiri::XML("<songs><first>The Gargoyle</first><second>Bronx</second></songs>")))
+        assert_equal({ "first" => "The Gargoyle", "second" => "Bronx" }, @property.read(Nokogiri::XML("<songs><first>The Gargoyle</first><second>Bronx</second></songs>")))
       end
 
       it "inserts with #write" do
         parent = Nokogiri::XML::Node.new("parent", @doc)
-        @property.write(parent, {"first" => "The Gargoyle", "second" => "Bronx"})
+        @property.write(parent, { "first" => "The Gargoyle", "second" => "Bronx" })
         assert_xml_equal("<songs><first>The Gargoyle</first><second>Bronx</second></songs>", parent.to_s)
       end
     end
