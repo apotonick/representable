@@ -1331,9 +1331,24 @@ module SongRepresenter
   # ..
 end
 ```
-
 This will give you a behavior close to Rails' `HashWithIndifferentAccess` by stringifying the incoming hash internally.
 
+When serializing an object into a `Hash`, you may want to convert keys to `Symbol`s.
+
+```ruby
+require 'representable/hash/symbolize_keys'
+
+module SongRepresenter
+  include Representable::Hash
+  include Representable::Hash::SymbolizeKeys
+  property :title
+end
+
+class Song < Struct.new(:title) ; end
+
+Song.new('a title').extend(SongRepresenter).to_hash # => {title: 'a title'}
+
+```
 
 ## Debugging
 
