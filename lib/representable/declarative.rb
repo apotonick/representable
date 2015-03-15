@@ -1,5 +1,12 @@
 module Representable
   module Declarative
+    def as_strategy=(strategy)
+      raise 'The :as_strategy option should respond to #call?' \
+        unless strategy.respond_to?(:call)
+
+      @as_strategy = strategy
+    end
+
     def representable_attrs
       @representable_attrs ||= build_config
     end
@@ -33,6 +40,8 @@ module Representable
     end
 
     def property(name, options={}, &block)
+      options = { as: as_strategy.(name.to_s) }.merge(options) if as_strategy
+
       representable_attrs.add(name, options) do |default_options| # handles :inherit.
         build_definition(name, default_options, &block)
       end
@@ -49,6 +58,8 @@ module Representable
     end
 
   private
+    attr_reader :as_strategy
+
     # This method is meant to be overridden if you want to add or change DSL options.
     # The options hash is already initialized, add or change elements as you need.
     #
