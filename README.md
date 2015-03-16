@@ -9,7 +9,7 @@ Representable is helpful for all kind of mappings, rendering and parsing workflo
 
 ## Installation
 
-The representable gem runs with all Ruby versions >= 1.8.7.
+The representable gem runs with all supported Ruby versions.
 
 ```ruby
 gem 'representable'
