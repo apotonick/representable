@@ -16,7 +16,7 @@ class AsStrategyTest < BaseTest
       let(:input)  { { 'TITLE' => 'Wie es geht' } }
 
       representer! do
-        self.as_strategy = ->(name) { name.upcase }
+        self.naming_strategy = ->(name) { name.upcase }
         property :title
       end
 
@@ -29,7 +29,7 @@ class AsStrategyTest < BaseTest
       let(:input)  { { 'eltit' => 'Wie es geht' } }
 
       representer! do
-        self.as_strategy = ReverseNamingStrategy.new
+        self.naming_strategy = ReverseNamingStrategy.new
         property :title
       end
 
@@ -39,7 +39,7 @@ class AsStrategyTest < BaseTest
 
     describe 'with class not responding to #call?' do
       representer! do
-        self.as_strategy = Object.new
+        self.naming_strategy = Object.new
         property :title
       end
 
@@ -53,7 +53,7 @@ class AsStrategyTest < BaseTest
       let(:input)  { { 'TITLE' => 'Wie es geht' } }
 
       representer!(decorator: true) do
-        self.as_strategy = ->(name) { name.upcase }
+        self.naming_strategy = ->(name) { name.upcase }
         property :title
       end
 

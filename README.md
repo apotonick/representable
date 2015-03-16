@@ -90,7 +90,7 @@ You can also a naming strategy at a Representer-level:
 module SongRepresenter
   include Representable::JSON
 
-  self.as_strategy = ->(name) { name.camelize } # (with ActiveSupport available)
+  self.naming_strategy = ->(name) { name.camelize } # (with ActiveSupport available)
 
   property :song_title
   property :song_track, as: :track

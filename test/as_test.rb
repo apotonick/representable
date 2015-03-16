@@ -20,9 +20,9 @@ class AsTest < MiniTest::Spec
       it { parse(song, input).name.must_equal "Wie Es Geht" }
     end
 
-    describe "as: with :symbol, overriding as_strategy default" do
+    describe "as: with :symbol, overriding naming_strategy default" do
       representer!(module: mod) do
-        self.as_strategy = ->(name) { name.upcase }
+        self.naming_strategy = ->(name) { name.upcase }
 
         property :name, as: :title
       end
