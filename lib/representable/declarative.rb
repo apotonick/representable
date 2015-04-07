@@ -4,6 +4,10 @@ module Representable
       @representable_attrs ||= build_config
     end
 
+    def render_nil
+      @render_nil = true
+    end
+
     def representation_wrap=(name)
       representable_attrs.wrap = name
     end
@@ -32,7 +36,11 @@ module Representable
       property(name, options, &block)
     end
 
-    def property(name, options={}, &block)
+    def property(name, options = {}, &block)
+      if @render_nil
+        options[:render_nil] = true
+      end
+
       representable_attrs.add(name, options) do |default_options| # handles :inherit.
         build_definition(name, default_options, &block)
       end
