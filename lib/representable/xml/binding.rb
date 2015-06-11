@@ -37,7 +37,10 @@ module Representable
       end
 
       def serialize_node(node, value)
-        return value if typed?
+        if typed?
+          value.name = as if value.is_a?(::Nokogiri::XML::Element) && as != '_self'
+          return value
+        end
 
         node.content = value
         node
@@ -64,7 +67,7 @@ module Representable
       def find_nodes(doc)
         selector  = xpath
         selector  = "#{self[:wrap]}/#{xpath}" if self[:wrap]
-        nodes     = doc.xpath(selector)
+        doc.xpath(selector)
       end
 
       def node_for(parent, name)

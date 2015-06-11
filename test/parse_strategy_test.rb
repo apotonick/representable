@@ -21,7 +21,8 @@ class ParseStrategySyncTest < BaseTest
       end
 
       representer!(:inject => :song_representer, :module => mod) do
-        property :song, :parse_strategy => :sync, :extend => song_representer
+        options = { :parse_strategy => :sync, :extend => song_representer }
+        property :song, options
       end
 
       let (:hit) { hit = OpenStruct.new(:song => song).extend(representer) }
@@ -46,7 +47,7 @@ class ParseStrategySyncTest < BaseTest
   for_formats(
     :hash => [Representable::Hash, {"songs"=>[{"title"=>"Resist Stance"}]}, {"songs"=>[{"title"=>"Suffer"}]}],
     #:json => [Representable::JSON, "{\"song\":{\"name\":\"Alive\"}}", "{\"song\":{\"name\":\"You've Taken Everything\"}}"],
-    :xml  => [Representable::XML, "<open_struct><song><title>Resist Stance</title></song></open_struct>", "<open_struct><songs><title>Suffer</title></songs></open_struct>"],
+    :xml  => [Representable::XML, "<open_struct><song><title>Resist Stance</title></song></open_struct>", "<open_struct><song><title>Suffer</title></song></open_struct>"],
     :yaml => [Representable::YAML, "---\nsongs:\n- title: Resist Stance\n", "---\nsongs:\n- title: Suffer\n"],
   ) do |format, mod, output, input|
 
@@ -54,11 +55,12 @@ class ParseStrategySyncTest < BaseTest
       let (:format) { format }
       representer!(:module => mod, :name => :song_representer) do
         property :title
-        self.representation_wrap = :song if format == :xml
       end
 
       representer!(:inject => :song_representer, :module => mod) do
-        collection :songs, :parse_strategy => :sync, :extend => song_representer
+        options = { :parse_strategy => :sync, :extend => song_representer }
+        options[:as] = :song if format == :xml
+        collection :songs, options
       end
 
       let (:album) { OpenStruct.new(:songs => [song]).extend(representer) }
@@ -71,12 +73,10 @@ class ParseStrategySyncTest < BaseTest
         collection_id = album.songs.object_id
         song          = album.songs.first
         song_id       = song.object_id
-
         parse(album, input)
-
         album.songs.first.title.must_equal "Suffer"
         song.title.must_equal "Suffer"
-        #album.songs.object_id.must_equal collection_id # TODO: don't replace!
+        album.songs.object_id.must_equal collection_id # TODO: don't replace!
         song.object_id.must_equal song_id
       end
     end
