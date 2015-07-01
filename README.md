@@ -84,6 +84,20 @@ end
 song.to_json #=> {"name":"Fallout","track":1}
 ```
 
+You can also a naming strategy at a Representer-level:
+
+```ruby
+module SongRepresenter
+  include Representable::JSON
+
+  self.naming_strategy = ->(name) { name.camelize } # (with ActiveSupport available)
+
+  property :song_title
+  property :song_track, as: :track
+end
+
+song.to_json #=> {"songTitle":"Fallout","track":1}
+```
 
 ## Wrapping
 
