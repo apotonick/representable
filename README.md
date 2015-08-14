@@ -347,7 +347,7 @@ module AlbumRepresenter
 
 ## Representing Singular Models And Collections
 
-You can explicitly define representers for collections of models using a ["Lonely Collection"](#lonely-collections). Or you can let representable  do that for you.
+You can explicitly define representers for collections of models using a ["Lonely Collection"](#Lonely_Collections). Or you can let representable  do that for you.
 
 Rendering a collection of objects comes for free, using `::for_collection`.
 
