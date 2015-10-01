@@ -6,7 +6,7 @@ matrix:
     - rvm: 2.0.0
     - rvm: 2.1.1
     - rvm: 2.2.0
-    # FIXME: add rbx and jruby, again, fix ruby-prof.
-    # - rvm: rbx-2.2.10
+    - rvm: rbx-2.2.10
+    # FIXME:
     # - rvm: jruby-19mode
 

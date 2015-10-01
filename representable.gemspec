@@ -28,6 +28,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency "mongoid"
   s.add_development_dependency "virtus"
   s.add_development_dependency "json", '>= 1.7.7'
-
-  s.add_development_dependency "ruby-prof"
 end

@@ -127,3 +127,38 @@ class BaseTest < MiniTest::Spec
   let (:song_representer) { Module.new do include Representable::Hash; property :title end  }
 
 end
+
+$print_profiler = false
+
+case RUBY_ENGINE
+when "ruby"
+  require 'ruby-prof'
+  def profile
+    RubyProf.start
+    yield
+    res = RubyProf.stop
+    printer = RubyProf::FlatPrinter.new(res)
+    printer.print STDOUT if $print_profiler
+    data = StringIO.new
+    printer.print data
+    data.string
+  end
+  def build_match count, klass
+    "#{count}   #{klass}"
+  end
+when "rbx"
+  require 'rubinius/profiler'
+  def profile
+    profiler = Rubinius::Profiler::Instrumenter.new
+    profiler.start
+    yield
+    profiler.stop
+    profiler.show if $print_profiler
+    data = StringIO.new
+    profiler.show data
+    data.string
+  end
+  def build_match count, klass
+    %r(#{count}\s*[0-9.]*\s*[0-9.]*\s*#{klass})
+  end
+end

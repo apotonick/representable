@@ -2,6 +2,10 @@ source 'https://rubygems.org'
 
 gemspec
 
+platform :mri do
+  gem "ruby-prof"
+end
+
 platform :rbx do
   gem "psych"
   gem "rubysl-irb"

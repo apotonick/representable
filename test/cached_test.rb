@@ -1,5 +1,4 @@
 require "test_helper"
-require 'ruby-prof'
 
 class CachedTest < MiniTest::Spec
   # TODO: also test with feature(Cached)
@@ -53,26 +52,18 @@ class CachedTest < MiniTest::Spec
 
     # profiling
     it "xx" do
-     RubyProf.start
+      data = profile do
         representer.to_hash
-      res = RubyProf.stop
-
-      printer = RubyProf::FlatPrinter.new(res)
-
-      data = StringIO.new
-      printer.print(data)
-      data = data.string
-
-      printer.print(STDOUT)
+      end
 
       # only 1 nested decorators are instantiated, Song.
-      data.must_match "1   <Class::Representable::Decorator>#prepare"
+      data.must_match build_match(1, "<Class::Representable::Decorator>#prepare") if RUBY_ENGINE == "ruby"
       # a total of 4 properties in the object graph.
-      data.must_match "4   Representable::Binding#initialize"
+      data.must_match build_match(4, "Representable::Binding#initialize") # works on mri and rbx
       # 2 mappers for Album, Song
-      data.must_match "2   Representable::Mapper::Methods#initialize"
+      data.must_match build_match(2, "Representable::Mapper::Methods#initialize") if RUBY_ENGINE == "ruby"
       # 6 deserializers as the songs collection uses 2.
-      data.must_match "3   Representable::Deserializer#initialize"
+      data.must_match build_match(3, "Representable::Deserializer#initialize") if RUBY_ENGINE == "ruby"
     end
   end
 
@@ -109,27 +100,20 @@ class CachedTest < MiniTest::Spec
     it do
       representer = AlbumRepresenter.new(Model::Album.new)
 
-      RubyProf.start
+      data = profile do
         representer.from_hash(album_hash)
-      res = RubyProf.stop
-
-      printer = RubyProf::FlatPrinter.new(res)
-
-      data = StringIO.new
-      printer.print(data)
-      data = data.string
+      end
 
       # only 2 nested decorators are instantiated, Song, and Artist.
-      data.must_match "2   <Class::Representable::Decorator>#prepare"
+      data.must_match build_match(2, "<Class::Representable::Decorator>#prepare") if RUBY_ENGINE == "ruby"
       # a total of 5 properties in the object graph.
-      data.must_match "5   Representable::Binding#initialize"
+      data.must_match build_match(5, "Representable::Binding#initialize") # works on mri and rbx
       # three mappers for Album, Song, composer
-      data.must_match "3   Representable::Mapper::Methods#initialize"
+      data.must_match build_match(3, "Representable::Mapper::Methods#initialize") if RUBY_ENGINE == "ruby"
       # 6 deserializers as the songs collection uses 2.
-      data.must_match "6   Representable::Deserializer#initialize"
+      data.must_match build_match(6, "Representable::Deserializer#initialize") if RUBY_ENGINE == "ruby"
       # one populater for every property.
-      data.must_match "5   Representable::Populator#initialize"
-      # printer.print(STDOUT)
+      data.must_match build_match(5, "Representable::Populator#initialize") if RUBY_ENGINE == "ruby"
     end
   end
 end
