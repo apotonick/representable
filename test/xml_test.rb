@@ -160,7 +160,7 @@ class XmlTest < MiniTest::Spec
         @album.extend(AlbumRepresenter)
 
         assert_xml_equal "<album>
-  <song><name>Mr. Charisma</name></song>
+  <best_song><name>Mr. Charisma</name></best_song>
   <song><name>I Hate My Brain</name></song>
   <song><name>Mr. Charisma</name></song>
 </album>", @album.to_xml
@@ -277,9 +277,9 @@ class TypedPropertyTest < MiniTest::Spec
         album = Album.new(band).extend(AlbumRepresenter)
 
         assert_xml_equal %{<album>
-         <c_data_band>
+         <band>
            <name><![CDATA[Bad Religion]]></name>
-         </c_data_band>
+         </band>
        </album>}, album.to_xml
       end
     end
@@ -481,7 +481,7 @@ class XmlHashTest < MiniTest::Spec
 
   describe "with objects" do
     representer!(module: Representable::XML) do
-      hash :songs, class: OpenStruct do
+      hash :songs, class: OpenStruct, as: :open_struct do
         property :title
       end
     end
@@ -500,4 +500,61 @@ class XmlHashTest < MiniTest::Spec
     # FIXME: this NEVER worked!
     # it { OpenStruct.new.extend(representer).from_xml(doc).songs.must_equal({"first" => "The Gargoyle", "second" => "Bronx"}) }
   end
+end
+
+class XMLInheritenceTest < Minitest::Spec
+  class DateEntry
+    attr_accessor :value, :format
+    def initialize(value = nil)
+      @value = value
+      @format = 'YYYYMMDD'
+    end
+  end
+
+  class InvoiceEntry
+    attr_accessor :start_date, :end_date
+    def initialize(start_date = nil, end_date = nil)
+      @start_date = DateEntry.new(start_date) if start_date
+      @end_date = DateEntry.new(end_date) if end_date
+    end
+  end
+
+  class DateDecorator < ::Representable::Decorator
+    include Representable::XML
+    property :value, content: true
+    property :format, as: 'Format', attribute: true
+  end
+
+  class InvoiceDecorator < ::Representable::Decorator
+    include Representable::XML
+    property :start_date, decorator: DateDecorator, class: DateEntry
+    property :end_date, decorator: DateDecorator, class: DateEntry
+  end
+
+  let(:doc) {
+    <<-STR
+      <invoice_entry>
+        <start_date Format="YYYYMMDD">20141212</start_date>
+        <end_date Format="YYYYMMDD">20141216</end_date>
+      </invoice_entry>
+    STR
+  }
+
+  let(:invoice) {
+    InvoiceEntry.new('20141212', '20141216')
+  }
+
+  describe '#to_xml' do
+    it { InvoiceDecorator.new(invoice).to_xml.must_equal_xml doc }
+  end
+
+  describe '#from_xml' do
+    it 'should create proper entries' do
+      invoice_from_xml = InvoiceEntry.new
+      InvoiceDecorator.new(invoice_from_xml).from_xml(doc)
+      invoice_from_xml.start_date.value.must_equal '20141212'
+      invoice_from_xml.end_date.value.must_equal '20141216'
+    end
+  end
+
 end
