@@ -67,7 +67,7 @@ module Representable::Binding::Deprecation
 
       __options = if self[:pass_options]
         warn %{[Representable] The :pass_options option is deprecated. Please access environment objects via options[:binding].
-  Learn more here: http://trailblazerb.org/gems/representable/upgrading-guide.html#pass-options}
+  Learn more here: http://trailblazer.to/gems/representable/upgrading-guide.html#pass-options}
 
 
         options[:options] ||= {}
@@ -84,7 +84,7 @@ module Representable::Binding::Deprecation
           warn %{[Representable] Positional arguments for `:#{name}` are deprecated. Please use options or keyword arguments.
   #{name}: ->(options) { options[:#{positional_arguments.join(" | :")}] } or
   #{name}: ->(#{positional_arguments.join(":, ")}:) {  }
-  Learn more here: http://trailblazerb.org/gems/representable/upgrading-guide.html#positional-arguments
+  Learn more here: http://trailblazer.to/gems/representable/upgrading-guide.html#positional-arguments
   }
           deprecated_args = []
           positional_arguments.each do |arg|
