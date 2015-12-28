@@ -18,4 +18,9 @@ class GetterSetterTest < BaseTest
     subject.instance_eval { def name=(*); raise; end; self }
     subject.from_hash({"name" => "Eyes Without A Face"}, user_options: {welcome: "Hello"}).song_name.must_equal "Hello Eyes Without A Face"
   end
+
+  it "uses :setter when parsing if set value is nil" do
+    subject.instance_eval { def name=(*); raise('used SetValue instead of Setter'); end; self }
+    subject.from_hash({"name" => nil}, user_options: {welcome: "Hello"}).song_name.must_equal "Hello "
+  end
 end
