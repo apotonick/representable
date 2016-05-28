@@ -26,6 +26,12 @@ module Representable
 
       class Collection < self
         include Representable::Binding::Collection
+
+        def read(hash, as)
+          collection = super
+          collection = [collection] if collection.is_a?(::Hash)
+          collection
+        end
       end
     end
   end
