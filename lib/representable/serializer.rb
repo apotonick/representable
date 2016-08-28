@@ -3,7 +3,18 @@ module Representable
     options[:binding].evaluate_option(:getter, input, options)
   end
 
-  GetValue = ->(input, options) { options[:binding].send(:exec_context, options).send(options[:binding].getter) }
+  GetValue = ->(input, options) do
+    exec_context = options[:binding].send(:exec_context, options)
+    getter_method = exec_context.method(options[:binding].getter)
+
+    if getter_method.arity > 0
+      arguments = [{ options: options[:options] }]
+    else
+      arguments = []
+    end
+
+    exec_context.send(options[:binding].getter, *arguments)
+  end
 
   Writer = ->(input, options) do
     options[:binding].evaluate_option(:writer, input, options)
