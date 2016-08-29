@@ -10,7 +10,7 @@ module Representable
     arguments << {
       options: options[:options],
       user_options: options[:options][:user_options]
-    } if context.method(options[:binding].getter).arity == 1
+    } if !context.is_a?(OpenStruct) && context.method(options[:binding].getter).arity == 1
 
     context.send(options[:binding].getter, *arguments)
   end
