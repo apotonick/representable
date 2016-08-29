@@ -88,8 +88,18 @@ module Representable
   end
 
   Setter   = ->(input, options) { options[:binding].evaluate_option(:setter, input, options) }
-  SetValue = ->(input, options) { options[:binding].send(:exec_context, options).send(options[:binding].setter, input) }
 
+  SetValue = ->(input, options) do
+    context = options[:binding].send(:exec_context, options)
+
+    arguments = [input]
+    arguments << {
+      options: options[:options],
+      user_options: options[:options][:user_options]
+    } if context.method(options[:binding].setter).arity == 2
+
+    context.send(options[:binding].setter, *arguments)
+  end
 
   Stop = ->(*) { Pipeline::Stop }
 

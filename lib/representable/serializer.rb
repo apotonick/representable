@@ -4,16 +4,15 @@ module Representable
   end
 
   GetValue = ->(input, options) do
-    exec_context = options[:binding].send(:exec_context, options)
-    getter_method = exec_context.method(options[:binding].getter)
+    context = options[:binding].send(:exec_context, options)
 
-    if getter_method.arity > 0
-      arguments = [{ options: options[:options] }]
-    else
-      arguments = []
-    end
+    arguments = []
+    arguments << {
+      options: options[:options],
+      user_options: options[:options][:user_options]
+    } if context.method(options[:binding].getter).arity == 1
 
-    exec_context.send(options[:binding].getter, *arguments)
+    context.send(options[:binding].getter, *arguments)
   end
 
   Writer = ->(input, options) do
