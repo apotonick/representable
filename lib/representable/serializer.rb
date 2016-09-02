@@ -5,12 +5,13 @@ module Representable
 
   GetValue = ->(input, options) do
     context = options[:binding].send(:exec_context, options)
+    return options[:binding].send(:exec_context, options).send(options[:binding].getter) unless context
 
     arguments = []
     arguments << {
       options: options[:options],
       user_options: options[:options][:user_options]
-    } if !context.is_a?(OpenStruct) && context.respond_to?(options[:binding].getter) && context.method(options[:binding].getter).arity == 1
+    } if !context.is_a?(OpenStruct) && context.method(options[:binding].getter).arity == 1
 
     context.send(options[:binding].getter, *arguments)
   end

@@ -96,7 +96,7 @@ module Representable
     arguments << {
       options: options[:options],
       user_options: options[:options][:user_options]
-    } if !context.is_a?(OpenStruct) && context.respond_to?(options[:binding].getter) && context.method(options[:binding].setter).arity == 2
+    } if !context.is_a?(OpenStruct) && context.method(options[:binding].setter).arity == 2
 
     context.send(options[:binding].setter, *arguments)
   end
