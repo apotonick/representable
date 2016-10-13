@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake"
   spec.add_development_dependency "test_xml", "0.1.6"
   spec.add_development_dependency "minitest"
-  spec.add_development_dependency "mongoid"
+  spec.add_development_dependency "mongoid", "~> 5.1.4"
   spec.add_development_dependency "virtus"
   spec.add_development_dependency "json", '>= 1.7.7'
 

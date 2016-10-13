@@ -5,14 +5,6 @@ module Representable
 
       object_class = binding[:class].(input, options)
       object       = object_class.find_by(id: input["id"]) || object_class.new
-      if options[:binding].array?
-        # represented.songs[i] = model
-        options[:represented].send(binding.getter)[options[:index]] = object
-      else
-        # represented.song = model
-        options[:represented].send(binding.setter, object)
-      end
-
       object
      }
 
@@ -23,7 +15,6 @@ module Representable
 
       options[:parse_pipeline] = ->(input, options) do
         pipeline = Pipeline[*parse_functions] # TODO: AssignFragment
-        pipeline = Pipeline::Insert.(pipeline, SetValue, delete: true) # remove the setter function.
         pipeline = Pipeline::Insert.(pipeline, populator, replace: CreateObject::Populator) # let the actual populator do the job.
         # puts pipeline.extend(Representable::Pipeline::Debug).inspect
         pipeline
