@@ -76,8 +76,8 @@ class HashDisableWrapTest < MiniTest::Spec
 
   it do
     band.from_hash({"bands" => {"name"=>"Social Distortion"}}).name.must_equal "Social Distortion"
-    band.from_hash({"name"=>"Social Distortion"}, wrap: false).name.must_equal "Social Distortion"
-    band.from_hash({band: {"name"=>"Social Distortion"}}, wrap: :band).name.must_equal "Social Distortion"
+    band.from_hash({"name"=>"Bad Religion"}, wrap: false).name.must_equal "Bad Religion"
+    band.from_hash({"band"=>{"name"=>"Pennywise"}}, wrap: :band).name.must_equal "Pennywise"
   end
 
   it 'raises a TypeError when unwrapped argument is not a Hash' do
