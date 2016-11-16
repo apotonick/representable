@@ -27,6 +27,13 @@ class HashWithScalarPropertyTest < MiniTest::Spec
       album.title.must_equal nil
       album.extend(representer).from_hash("title" => nil)
     end
+
+    it 'raises a TypeError when argument is not a Hash' do
+      from_hash = -> {
+        album.extend(representer).from_hash('not Hashish')
+      }.must_raise TypeError
+      from_hash.message.must_equal 'Expected Hash, got String.'
+    end
   end
 end
 
