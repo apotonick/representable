@@ -19,6 +19,14 @@ module Representable::Hash
 
     # TODO: revise lonely collection and build separate pipeline where we just use Serialize, etc.
 
+    def from_hash(data, options={}, binding_builder=Binding)
+      data = filter_wrap(data, options)
+      data = [data] if ::Hash === data
+      raise TypeError, "Expected Enumerable, got #{data.class}." unless data.respond_to?(:each)
+
+      update_properties_from(data, options, binding_builder)
+    end
+
     def create_representation_with(doc, options, format)
       options = normalize_options(options)
       options[:_self] = options
