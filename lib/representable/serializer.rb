@@ -3,7 +3,18 @@ module Representable
     options[:binding].evaluate_option(:getter, input, options)
   end
 
-  GetValue = ->(input, options) { options[:binding].send(:exec_context, options).send(options[:binding].getter) }
+  GetValue = ->(input, options) do
+    context = options[:binding].send(:exec_context, options)
+    return options[:binding].send(:exec_context, options).send(options[:binding].getter) unless context
+
+    arguments = []
+    arguments << {
+      options: options[:options],
+      user_options: options[:options][:user_options]
+    } if !context.is_a?(OpenStruct) && context.method(options[:binding].getter).arity == 1
+
+    context.send(options[:binding].getter, *arguments)
+  end
 
   Writer = ->(input, options) do
     options[:binding].evaluate_option(:writer, input, options)
