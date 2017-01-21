@@ -94,10 +94,12 @@ class InlineTest < MiniTest::Spec
         end
       end
 
-      let (:decorator) { representer.prepare(request) }
+      describe "with :decorator => #{is_decorator}" do
+        let (:decorator) { representer.prepare(request) }
 
-      it { decorator.to_hash.must_equal({"requester"=>"Josephine", "song"=>{"name"=>"Alive"}}) }
-      it { decorator.from_hash({"song"=>{"name"=>"You've Taken Everything"}}).song.name.must_equal "You've Taken Everything"}
+        it { decorator.to_hash.must_equal({"requester"=>"Josephine", "song"=>{"name"=>"Alive"}}) }
+        it { decorator.from_hash({"song"=>{"name"=>"You've Taken Everything"}}).song.name.must_equal "You've Taken Everything"}
+      end
     end
   end
 
