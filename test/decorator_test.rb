@@ -43,7 +43,7 @@ class DecoratorTest < MiniTest::Spec
     album.wont_respond_to :to_hash
     song.wont_respond_to :to_hash # DISCUSS: weak test, how to assert blank slate?
     # no @representable_attrs in decorated objects
-    song.instance_variable_get(:@representable_attrs).must_be_nil
+    song.wont_be(:instance_variable_defined?, :@representable_attrs)
 
     rating_decorator.to_hash.must_equal({"system" => "MPAA", "value" => "R"})
   end
@@ -80,8 +80,8 @@ class DecoratorTest < MiniTest::Spec
       representer.new(album).from_hash({"songs"=>[{"name"=>"Atomic Garden"}]})
 
       # no @representable_attrs in decorated objects
-      song.instance_variable_get(:@representable_attrs).must_be_nil
-      album.instance_variable_get(:@representable_attrs).must_be_nil
+      song.wont_be(:instance_variable_defined?, :@representable_attrs)
+      album.wont_be(:instance_variable_defined?, :@representable_attrs)
     end
   end
 end
