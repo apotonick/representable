@@ -21,7 +21,15 @@ module Representable
       excluding = options[:exclude]
       # TODO: use same filtering method as in normal representer in Representable#create_representation_with.
       return hash unless props = options.delete(:exclude) || options.delete(:include)
-      hash.reject { |k,v| excluding ? props.include?(k.to_sym) : !props.include?(k.to_sym) }
+
+      # Converting to Array and back to Hash
+      # just to avoid a `warning: extra states are no longer copied:`
+      # See: https://bugs.ruby-lang.org/issues/9275
+      ary = hash.to_a.reject do |k,v|
+        excluding ? props.include?(k.to_sym) : !props.include?(k.to_sym)
+      end
+
+      ::Hash[ary]
     end
   end
 end
