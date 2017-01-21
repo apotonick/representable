@@ -37,8 +37,11 @@ class PopulatorFindOrInstantiateTest < Minitest::Spec
     end
   end
 
-  Composer = Struct.new(:song)
-  Composer.class_eval do
+  class Composer
+    def initializer(song)
+      @song = song
+    end
+
     def song=(v)
       @song = v
       "Absolute nonsense" # this tests that the populator always returns the correct object.

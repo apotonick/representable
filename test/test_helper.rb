@@ -82,6 +82,8 @@ MiniTest::Spec.class_eval do
     name   = options[:name]   || :representer
     format = options[:module] || Representable::Hash
 
+    undef_method(name) if method_defined?(name)
+
     let(name) do
       mod = options[:decorator] ? Class.new(Representable::Decorator) : Module.new
 
@@ -103,6 +105,7 @@ MiniTest::Spec.class_eval do
       injected_name = options[:inject]
       injected = send(injected_name) # song_representer
       mod.singleton_class.instance_eval do
+        undef_method(injected_name) if method_defined?(injected_name)
         define_method(injected_name) { injected }
       end
     end
