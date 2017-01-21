@@ -6,12 +6,12 @@ class HeritageTest < Minitest::Spec
       puts "Hello!"
     end
   end
-    module Ciao
+
+  module Ciao
     def ciao
       puts "Ciao!"
     end
   end
-
 
   class A < Representable::Decorator
     include Representable::Hash

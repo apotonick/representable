@@ -253,9 +253,7 @@ end
         assert_json '{"songName":"22 Acacia Avenue"}', song.to_json
       end
     end
-
-end
-
+  end
 
   class CollectionTest < MiniTest::Spec
     describe "collection :name" do
