@@ -55,7 +55,7 @@ class InstanceTest < BaseTest
     end
 
     it {
-      album= Struct.new(:songs).new(songs = [
+      album= Struct.new(:songs).new([
       Song.new(1, "The Answer Is Still No"),
       Song.new(2, "")])
 

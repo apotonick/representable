@@ -6,8 +6,6 @@ class DefinitionTest < MiniTest::Spec
   # TODO: test that we DON'T clone options, that must happen in
   describe "#initialize" do
     it do
-      opts = nil
-
       # new yields the defaultized options HASH.
       definition = Definition.new(:song, :extend => Module) do |options|
         options[:awesome] = true

@@ -145,14 +145,14 @@ class XmlTest < MiniTest::Spec
       module SongRepresenter
         include Representable::XML
         property :name
-        representation_wrap = :song
+        :song # representation_wrap
       end
 
       module AlbumRepresenter
         include Representable::XML
         property :best_song, :class => Song, :extend => SongRepresenter
         collection :songs, :class => Song, :as => :song, :extend => SongRepresenter
-        representation_wrap = :album
+        :album # representation_wrap
       end
 
 

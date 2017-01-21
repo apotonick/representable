@@ -61,7 +61,7 @@ class CachedTest < MiniTest::Spec
     let (:representer) { AlbumRepresenter.new(album) }
 
     it do
-      album2 = Model::Album.new("Louder And Even More Dangerous", [song2, song])
+      # album2 = Model::Album.new("Louder And Even More Dangerous", [song2, song])
 
       # makes sure options are passed correctly.
       representer.to_hash(user_options: {volume: 9}).must_equal({"name"=>"Live And Dangerous",
