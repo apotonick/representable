@@ -16,7 +16,7 @@ class PopulatorTest < Minitest::Spec
       end
     end
 
-    let (:album) { Album.new([]) }
+    let(:album) { Album.new([]) }
 
     it do
       album.extend(representer).from_hash("songs"=>[{"id"=>1}, {"id"=>2}], "artist"=>{"name"=>"Waste"})
@@ -58,7 +58,7 @@ class PopulatorFindOrInstantiateTest < Minitest::Spec
       end
     end
 
-    let (:album) { Composer.new.extend(representer).extend(Representable::Debug) }
+    let(:album) { Composer.new.extend(representer).extend(Representable::Debug) }
 
     it "finds by :id and creates new without :id" do
       album.from_hash({"song"=>{"id" => 1, "title"=>"Resist Stance"}})
@@ -85,7 +85,7 @@ class PopulatorFindOrInstantiateTest < Minitest::Spec
       end
     end
 
-    let (:album) { Struct.new(:songs).new([]).extend(representer) }
+    let(:album) { Struct.new(:songs).new([]).extend(representer) }
 
     it "finds by :id and creates new without :id" do
       album.from_hash({"songs"=>[

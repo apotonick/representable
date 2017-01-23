@@ -19,13 +19,13 @@ class DecoratorTest < MiniTest::Spec
     property :value
   end
 
-  let (:song) { Song.new("Mama, I'm Coming Home") }
-  let (:album) { Album.new([song]) }
+  let(:song) { Song.new("Mama, I'm Coming Home") }
+  let(:album) { Album.new([song]) }
 
-  let (:rating) { OpenStruct.new(system: 'MPAA', value: 'R') }
+  let(:rating) { OpenStruct.new(system: 'MPAA', value: 'R') }
 
   describe "inheritance" do
-    let (:inherited_decorator) do
+    let(:inherited_decorator) do
       Class.new(AlbumRepresentation) do
         property :best_song
       end.new(Album.new([song], "Stand Up"))
@@ -34,7 +34,7 @@ class DecoratorTest < MiniTest::Spec
     it { inherited_decorator.to_hash.must_equal({"songs"=>[{"name"=>"Mama, I'm Coming Home"}], "best_song"=>"Stand Up"}) }
   end
 
-  let (:decorator) { AlbumRepresentation.new(album) }
+  let(:decorator) { AlbumRepresentation.new(album) }
 
   let(:rating_decorator) { RatingRepresentation.new(rating) }
 

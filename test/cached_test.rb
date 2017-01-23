@@ -53,12 +53,12 @@ class CachedTest < MiniTest::Spec
 
 
   describe "serialization" do
-    let (:album_hash) { {"name"=>"Louder And Even More Dangerous", "songs"=>[{"title"=>"Southbound:{:volume=>10}"}, {"title"=>"Jailbreak:{:volume=>10}"}]} }
+    let(:album_hash) { {"name"=>"Louder And Even More Dangerous", "songs"=>[{"title"=>"Southbound:{:volume=>10}"}, {"title"=>"Jailbreak:{:volume=>10}"}]} }
 
-    let (:song) { Model::Song.new("Jailbreak") }
-    let (:song2) { Model::Song.new("Southbound") }
-    let (:album) { Model::Album.new("Live And Dangerous", [song, song2, Model::Song.new("Emerald")]) }
-    let (:representer) { AlbumRepresenter.new(album) }
+    let(:song) { Model::Song.new("Jailbreak") }
+    let(:song2) { Model::Song.new("Southbound") }
+    let(:album) { Model::Album.new("Live And Dangerous", [song, song2, Model::Song.new("Emerald")]) }
+    let(:representer) { AlbumRepresenter.new(album) }
 
     it do
       # album2 = Model::Album.new("Louder And Even More Dangerous", [song2, song])
@@ -102,7 +102,7 @@ class CachedTest < MiniTest::Spec
 
 
   describe "deserialization" do
-    let (:album_hash) {
+    let(:album_hash) {
       {
         "name"=>"Louder And Even More Dangerous",
         "songs"=>[

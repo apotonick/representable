@@ -9,7 +9,7 @@ class DefaultTest < MiniTest::Spec
   end
 
   describe "#from_hash" do
-    let (:song) { Song.new.extend(representer) }
+    let(:song) { Song.new.extend(representer) }
 
     it { song.from_hash({}).must_equal Song.new(nil, "Huber Breeze") }
     # default doesn't apply when empty string.

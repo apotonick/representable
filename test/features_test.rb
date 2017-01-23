@@ -20,7 +20,7 @@ class FeaturesTest < MiniTest::Spec
     end
   }
 
-  let (:song) { OpenStruct.new(:details => Object.new) }
+  let(:song) { OpenStruct.new(:details => Object.new) }
 
   describe "Module" do
     representer! do

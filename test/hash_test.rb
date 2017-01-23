@@ -9,14 +9,14 @@ class HashPublicMethodsTest < Minitest::Spec
     property :name
   end
 
-  let (:data) { {"id"=>1,"name"=>"Rancid"} }
+  let(:data) { {"id"=>1,"name"=>"Rancid"} }
 
   it { BandRepresenter.new(Band.new).from_hash(data)[:id, :name].must_equal [1, "Rancid"] }
   it { BandRepresenter.new(Band.new).parse(data)[:id, :name].must_equal [1, "Rancid"] }
 
   #---
   # to_hash
-  let (:band) { Band.new(1, "Rancid") }
+  let(:band) { Band.new(1, "Rancid") }
 
   it { BandRepresenter.new(band).to_hash.must_equal data }
   it { BandRepresenter.new(band).render.must_equal data }
@@ -29,7 +29,7 @@ class HashWithScalarPropertyTest < MiniTest::Spec
     property :title
   end
 
-  let (:album) { Album.new("Liar") }
+  let(:album) { Album.new("Liar") }
 
   describe "#to_hash" do
     it "renders plain property" do
@@ -62,7 +62,7 @@ class HashWithTypedPropertyTest < MiniTest::Spec
     end
   end
 
-  let (:album) { Album.new(Song.new("Liar")) }
+  let(:album) { Album.new(Song.new("Liar")) }
 
   describe "#to_hash" do
     it "renders embedded typed property" do
@@ -107,7 +107,7 @@ class HashWithTypedPropertyAndAs < MiniTest::Spec
     end
   end
 
-  let (:album) { OpenStruct.new(:song => Song.new("Liar")).extend(representer) }
+  let(:album) { OpenStruct.new(:song => Song.new("Liar")).extend(representer) }
 
   it { album.to_hash.must_equal("hit" => {"name" => "Liar"}) }
   it { album.from_hash("hit" => {"name" => "Go With Me"}).must_equal OpenStruct.new(:song => Song.new("Go With Me")) }
@@ -119,13 +119,13 @@ end
   #   #     property :name
   #   #   end
 
-  #   #   let (:hash_album) { Module.new do
+  #   #   let(:hash_album) { Module.new do
   #   #     include Representable::XML
   #   #     self.representation_wrap = :album
   #   #     property :song, :extend => hash_song, :class => Song, :as => :hit
   #   #   end }
 
-  #   #   let (:album) { OpenStruct.new(:song => Song.new("Liar")).extend(hash_album) }
+  #   #   let(:album) { OpenStruct.new(:song => Song.new("Liar")).extend(hash_album) }
 
   #   #   it { album.to_xml.must_equal_xml("<album><hit><name>Liar</name></hit></album>") }
   #   #   #it { album.from_hash("hit" => {"name" => "Go With Me"}).must_equal OpenStruct.new(:song => Song.new("Go With Me")) }
@@ -144,7 +144,7 @@ class HashWithTypedCollectionTest < MiniTest::Spec
     end
   end
 
-  let (:album) { Album.new([Song.new("Liar", 1), Song.new("What I Know", 2)]) }
+  let(:album) { Album.new([Song.new("Liar", 1), Song.new("What I Know", 2)]) }
 
   describe "#to_hash" do
     it "renders collection of typed property" do
@@ -164,7 +164,7 @@ class HashWithScalarCollectionTest < MiniTest::Spec
   Album = Struct.new(:songs)
   representer! { collection :songs }
 
-  let (:album) { Album.new(["Jackhammer", "Terrible Man"]) }
+  let(:album) { Album.new(["Jackhammer", "Terrible Man"]) }
 
 
   describe "#to_hash" do

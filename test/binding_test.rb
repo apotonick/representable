@@ -2,10 +2,10 @@ require 'test_helper'
 
 class BindingTest < MiniTest::Spec
   Binding = Representable::Binding
-  let (:render_nil_definition) { Representable::Definition.new(:song, :render_nil => true) }
+  let(:render_nil_definition) { Representable::Definition.new(:song, :render_nil => true) }
 
   describe "#skipable_empty_value?" do
-    let (:binding) { Binding.new(render_nil_definition) }
+    let(:binding) { Binding.new(render_nil_definition) }
 
     # don't skip when present.
     it { binding.skipable_empty_value?("Disconnect, Disconnect").must_equal false }
@@ -22,8 +22,8 @@ class BindingTest < MiniTest::Spec
 
 
   describe "#default_for" do
-    let (:definition) { Representable::Definition.new(:song, :default => "Insider") }
-    let (:binding) { Binding.new(definition) }
+    let(:definition) { Representable::Definition.new(:song, :default => "Insider") }
+    let(:binding) { Binding.new(definition) }
 
     # return value when value present.
     it { binding.default_for("Black And Blue").must_equal "Black And Blue" }

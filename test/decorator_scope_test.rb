@@ -6,7 +6,7 @@ class DecoratorScopeTest < MiniTest::Spec
     property :title, :getter => lambda { |*| title_from_representer }, :decorator_scope => true
   end
 
-  let (:representer_with_method) {
+  let(:representer_with_method) {
     Module.new do
       include Representable::Hash
       property :title, :decorator_scope => true

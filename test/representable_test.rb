@@ -449,9 +449,9 @@ class RepresentableTest < MiniTest::Spec
     end
 
     describe ":decorator" do
-      let (:extend_rpr) { Module.new { include Representable::Hash; collection :songs, :extend => SongRepresenter } }
-      let (:decorator_rpr) { Module.new { include Representable::Hash; collection :songs, :decorator => SongRepresenter } }
-      let (:songs) { [Song.new("Bloody Mary")] }
+      let(:extend_rpr) { Module.new { include Representable::Hash; collection :songs, :extend => SongRepresenter } }
+      let(:decorator_rpr) { Module.new { include Representable::Hash; collection :songs, :decorator => SongRepresenter } }
+      let(:songs) { [Song.new("Bloody Mary")] }
 
       it "is aliased to :extend" do
         Album.new(songs).extend(extend_rpr).to_hash.must_equal Album.new(songs).extend(decorator_rpr).to_hash
@@ -470,8 +470,8 @@ class RepresentableTest < MiniTest::Spec
     end
 
     describe "::prepare" do
-      let (:song) { Song.new("Still Friends In The End") }
-      let (:album) { Album.new([song]) }
+      let(:song) { Song.new("Still Friends In The End") }
+      let(:album) { Album.new([song]) }
 
       describe "module including Representable" do
         it "uses :extend strategy" do

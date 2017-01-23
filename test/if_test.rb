@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class IfTest < MiniTest::Spec
-  let (:band_class) { Class.new do
+  let(:band_class) { Class.new do
     include Representable::Hash
     attr_accessor :fame
     self

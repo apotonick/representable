@@ -25,14 +25,14 @@ class DefinitionTest < MiniTest::Spec
   end
 
   describe "#[]" do
-    let (:definition) { Definition.new(:song) }
+    let(:definition) { Definition.new(:song) }
     # default is nil.
     it { definition[:bla].must_be_nil }
   end
 
   # merge!
   describe "#merge!" do
-    let (:definition) { Definition.new(:song, :whatever => true) }
+    let(:definition) { Definition.new(:song, :whatever => true) }
 
     # merges new options.
     it { definition.merge!(:something => true)[:something].must_equal true }
@@ -59,7 +59,7 @@ class DefinitionTest < MiniTest::Spec
     end
 
     describe "with :parse_filter" do
-      let (:definition) { Definition.new(:title, :parse_filter => 1) }
+      let(:definition) { Definition.new(:title, :parse_filter => 1) }
 
       # merges :parse_filter and :render_filter.
       it do
@@ -83,7 +83,7 @@ class DefinitionTest < MiniTest::Spec
 
   # delete!
   describe "#delete!" do
-    let (:definition) { Definition.new(:song, serialize: "remove me!") }
+    let(:definition) { Definition.new(:song, serialize: "remove me!") }
 
     before { definition[:serialize].(nil).must_equal "remove me!" }
 

@@ -18,8 +18,8 @@ class ObjectTest < MiniTest::Spec
     # TODO: collection
   end
 
-  let (:source) { Song.new("The King Is Dead", Album.new("Ruiner", [Song.new("In Vino Veritas II")])) }
-  let (:target) { Song.new }
+  let(:source) { Song.new("The King Is Dead", Album.new("Ruiner", [Song.new("In Vino Veritas II")])) }
+  let(:target) { Song.new }
 
   it do
     representer.prepare(target).from_object(source)

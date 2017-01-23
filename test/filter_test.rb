@@ -1,8 +1,8 @@
 require 'test_helper'
 
 class FilterPipelineTest < MiniTest::Spec
-  let (:block1) { lambda { |input, options| "1: #{input}" } }
-  let (:block2) { lambda { |input, options| "2: #{input}" } }
+  let(:block1) { lambda { |input, options| "1: #{input}" } }
+  let(:block2) { lambda { |input, options| "2: #{input}" } }
 
   subject { Representable::Pipeline[block1, block2] }
 

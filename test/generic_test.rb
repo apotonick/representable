@@ -1,10 +1,10 @@
 require 'test_helper'
 
 class GenericTest < MiniTest::Spec # TODO: rename/restructure to CollectionTest.
-  let (:new_album)  { OpenStruct.new.extend(representer) }
-  let (:album)      { OpenStruct.new(:songs => ["Fuck Armageddon"]).extend(representer) }
-  let (:song) { OpenStruct.new(:title => "Resist Stance") }
-  let (:song_representer) { Module.new do include Representable::Hash; property :title end  }
+  let(:new_album)  { OpenStruct.new.extend(representer) }
+  let(:album)      { OpenStruct.new(:songs => ["Fuck Armageddon"]).extend(representer) }
+  let(:song) { OpenStruct.new(:title => "Resist Stance") }
+  let(:song_representer) { Module.new do include Representable::Hash; property :title end  }
 
 
   describe "::collection" do
@@ -32,14 +32,14 @@ class GenericTest < MiniTest::Spec # TODO: rename/restructure to CollectionTest.
     ) do |format, mod, output, input|
 
       describe "nil collections" do
-        let (:format) { format }
+        let(:format) { format }
 
         representer!(:module => mod) do
           collection :songs
           self.representation_wrap = :album if format == :xml
         end
 
-        let (:album) { Album.new.extend(representer) }
+        let(:album) { Album.new.extend(representer) }
 
         it "doesn't render collection in #{format}" do
           render(album).must_equal_document output
@@ -55,14 +55,14 @@ class GenericTest < MiniTest::Spec # TODO: rename/restructure to CollectionTest.
     ) do |format, mod, output, input|
 
       describe "empty collections" do
-        let (:format) { format }
+        let(:format) { format }
 
         representer!(:module => mod) do
           collection :songs
           self.representation_wrap = :album if format == :xml
         end
 
-        let (:album) { OpenStruct.new(:songs => []).extend(representer) }
+        let(:album) { OpenStruct.new(:songs => []).extend(representer) }
 
         it "renders empty collection in #{format}" do
           render(album).must_equal_document output
@@ -79,14 +79,14 @@ class GenericTest < MiniTest::Spec # TODO: rename/restructure to CollectionTest.
     ) do |format, mod, output, input|
 
       describe "render_empty [#{format}]" do
-        let (:format) { format }
+        let(:format) { format }
 
         representer!(:module => mod) do
           collection :songs, :render_empty => false
           self.representation_wrap = :album if format == :xml
         end
 
-        let (:album) { OpenStruct.new(:songs => []).extend(representer) }
+        let(:album) { OpenStruct.new(:songs => []).extend(representer) }
 
         it { render(album).must_equal_document output }
       end

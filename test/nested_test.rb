@@ -11,7 +11,7 @@ class NestedTest < MiniTest::Spec
 
     [false, true].each do |is_decorator|
       describe "::nested with (inline representer|decorator): #{is_decorator}" do
-        let (:format) { format }
+        let(:format) { format }
 
         representer!(:module => mod, :decorator => is_decorator) do
           nested :label do
@@ -27,8 +27,8 @@ class NestedTest < MiniTest::Spec
           # self.representation_wrap = :album if format == :xml
         end
 
-        let (:album) { Album.new("Epitaph", "Brett Gurewitz", 19) }
-        let (:decorator) { representer.prepare(album) }
+        let(:album) { Album.new("Epitaph", "Brett Gurewitz", 19) }
+        let(:decorator) { representer.prepare(album) }
 
         it "renders nested Album-properties in separate section" do
           render(decorator).must_equal_document output
@@ -49,7 +49,7 @@ class NestedTest < MiniTest::Spec
 
 
     describe "Decorator ::nested with extend:" do
-      let (:format) { format }
+      let(:format) { format }
 
       representer!(:name => :label_rpr) do
       	include mod
@@ -67,7 +67,7 @@ class NestedTest < MiniTest::Spec
         self.representation_wrap = :album if format == :xml
       end
 
-      let (:album) { representer.prepare(Album.new("Epitaph", "Brett Gurewitz", 19)) }
+      let(:album) { representer.prepare(Album.new("Epitaph", "Brett Gurewitz", 19)) }
 
       # TODO: shared example with above.
       it "renders nested Album-properties in separate section" do
@@ -99,7 +99,7 @@ class NestedTest < MiniTest::Spec
       nested :label, :inherit => true, :as => "Label"
     end
 
-    let (:album) { representer.prepare(Album.new("Epitaph", "Brett Gurewitz", 19)) }
+    let(:album) { representer.prepare(Album.new("Epitaph", "Brett Gurewitz", 19)) }
 
     it "renders nested Album-properties in separate section" do
       representer.prepare(album).to_hash.must_equal({"Label"=>{"owner"=>"Brett Gurewitz"}})
