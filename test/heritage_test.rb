@@ -3,13 +3,13 @@ require "test_helper"
 class HeritageTest < Minitest::Spec
   module Hello
     def hello
-      puts "Hello!"
+      "Hello!"
     end
   end
 
   module Ciao
     def ciao
-      puts "Ciao!"
+      "Ciao!"
     end
   end
 
@@ -34,15 +34,16 @@ class HeritageTest < Minitest::Spec
     property :id do end # overwrite old :id.
   end
 
-  it do
-    # puts A.heritage.inspect
-    # puts B.heritage.inspect
+  it "B must inherit Hello! feature from A" do
+    B.representable_attrs.get(:id)[:extend].(nil).new(nil).hello.must_equal "Hello!"
+  end
 
-    puts B.representable_attrs.get(:id)[:extend].(nil).new(nil).hello
-    puts B.representable_attrs.get(:id)[:extend].(nil).new(nil).ciao
+  it "B must have Ciao from module (feauture) Ciao" do
+    B.representable_attrs.get(:id)[:extend].(nil).new(nil).ciao.must_equal "Ciao!"
+  end
 
-    # feature Hello must be "inherited" from A and included in new C properties, too.
-    puts C.representable_attrs.get(:id)[:extend].(nil).new(nil).hello
+  it "C must inherit Hello! feature from A" do
+    C.representable_attrs.get(:id)[:extend].(nil).new(nil).hello.must_equal "Hello!"
   end
 
   module M
@@ -56,7 +57,9 @@ class HeritageTest < Minitest::Spec
     feature Ciao
   end
 
-  it do
-    Object.new.extend(N).hello
+  let(:obj_extending_N) { Object.new.extend(N) }
+
+  it "obj should inherit from N, and N from M" do
+    obj_extending_N.hello.must_equal "Hello!"
   end
 end
