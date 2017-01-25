@@ -1,16 +1,20 @@
+require 'representable/logger'
+
 module Representable
   module Debug
+    include Representable::Logger # provides #log
+
     def update_properties_from(doc, options, format)
-      puts
-      puts "[Deserialize]........."
-      puts "[Deserialize] document #{doc.inspect}"
+      log
+      log "[Deserialize]........."
+      log "[Deserialize] document #{doc.inspect}"
       super
     end
 
     def create_representation_with(doc, options, format)
-      puts
-      puts "[Serialize]........."
-      puts "[Serialize]"
+      log
+      log "[Serialize]........."
+      log "[Serialize]"
       super
     end
 
@@ -21,14 +25,16 @@ module Representable
     end
 
     module Binding
+      include Representable::Logger
+
       def evaluate_option(name, *args, &block)
-        puts "=====#{self[name]}" if name ==:prepare
-        puts (evaled = self[name]) ?
+        log "=====#{self[name]}" if name ==:prepare
+        log (evaled = self[name]) ?
           "                #evaluate_option [#{name}]: eval!!!" :
           "                #evaluate_option [#{name}]: skipping"
         value = super
-        puts "                #evaluate_option [#{name}]: --> #{value}" if evaled
-        puts "                #evaluate_option [#{name}]: -->= #{args.first}" if name == :setter
+        log "                #evaluate_option [#{name}]: --> #{value}" if evaled
+        log "                #evaluate_option [#{name}]: -->= #{args.first}" if name == :setter
         value
       end
 
@@ -44,18 +50,20 @@ module Representable
 
 
   module Pipeline::Debug
+    include Representable::Logger
+
     def call(input, options)
-      puts "Pipeline#call: #{inspect}"
-      puts "               input: #{input.inspect}"
+      log "Pipeline#call: #{inspect}"
+      log "               input: #{input.inspect}"
       super
     end
 
     def evaluate(block, memo, options)
       block.extend(Pipeline::Debug) if block.is_a?(Collect)
 
-      puts "  Pipeline   :   -> #{_inspect_function(block)} "
+      log "  Pipeline   :   -> #{_inspect_function(block)} "
       super.tap do |res|
-        puts "  Pipeline   :     result: #{res.inspect}"
+        log "  Pipeline   :     result: #{res.inspect}"
       end
     end
 
