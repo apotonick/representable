@@ -138,3 +138,16 @@ Band = Struct.new(:id, :name) do
     attrs.collect { |attr| send(attr) }
   end
 end
+
+# When running tests we print Debug information only if
+# DEBUG is set at command line like:
+#
+# DEBUG=true bundle exec rake
+
+# Set initial debuggin state based on enviroment variable DEBUG
+case ENV['DEBUG']
+when true, 1, '1', 'on', 'true'
+  Representable::Logger.on!
+else
+  Representable::Logger.off!
+end
