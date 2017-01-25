@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.platform    = Gem::Platform::RUBY
   spec.authors     = ["Nick Sutterer"]
   spec.email       = ["apotonick@gmail.com"]
-  spec.homepage    = "https://github.com/apotonick/representable/"
+  spec.homepage    = "https://github.com/trailblazer/representable/"
   spec.summary     = %q{Renders and parses JSON/XML/YAML documents from and to Ruby objects. Includes plain properties, collections, nesting, coercion and more.}
   spec.description = spec.summary
 
