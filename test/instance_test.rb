@@ -55,7 +55,7 @@ class InstanceTest < BaseTest
     end
 
     it {
-      album= Struct.new(:songs).new(songs = [
+      album= Struct.new(:songs).new([
       Song.new(1, "The Answer Is Still No"),
       Song.new(2, "")])
 
@@ -81,7 +81,7 @@ class InstanceTest < BaseTest
   #     property :song, :instance => lambda { |*| nil }, :extend => song_representer
   #   end
 
-  #   let (:hit) { hit = OpenStruct.new(:song => song).extend(representer) }
+  #   let(:hit) { hit = OpenStruct.new(:song => song).extend(representer) }
 
   #   it "calls #to_hash on song instance, nothing else" do
   #     hit.to_hash.must_equal("song"=>{"title"=>"Resist Stance"})

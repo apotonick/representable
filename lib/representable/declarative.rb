@@ -47,10 +47,10 @@ module Representable
     NestedBuilder = ->(options) do
       Module.new do
         include Representable # FIXME: do we really need this?
-        feature *options[:_features]
-        include *options[:_base] # base when :inherit, or in decorator.
+        feature(*options[:_features])
+        include(*options[:_base]) # base when :inherit, or in decorator.
 
-        module_eval &options[:_block]
+        module_eval(&options[:_block])
       end
     end
 

@@ -77,10 +77,12 @@ MiniTest::Spec.class_eval do
   end
 
   def self.representer!(options={}, &block)
-    fmt = options # we need that so the 2nd call to ::let (within a ::describe) remembers the right format.
+    fmt = options # we need that so the 2nd call to ::let(within a ::describe) remembers the right format.
 
     name   = options[:name]   || :representer
     format = options[:module] || Representable::Hash
+
+    undef_method(name) if method_defined?(name)
 
     let(name) do
       mod = options[:decorator] ? Class.new(Representable::Decorator) : Module.new
@@ -95,12 +97,15 @@ MiniTest::Spec.class_eval do
       mod
     end
 
+    undef :inject_representer if method_defined? :inject_representer
+
     def inject_representer(mod, options)
       return unless options[:inject]
 
       injected_name = options[:inject]
       injected = send(injected_name) # song_representer
       mod.singleton_class.instance_eval do
+        undef_method(injected_name) if method_defined?(injected_name)
         define_method(injected_name) { injected }
       end
     end
@@ -110,7 +115,7 @@ MiniTest::Spec.class_eval do
     def representer_for(modules=[Representable::Hash], &block)
       Module.new do
         extend TestMethods
-        include *modules
+        include(*modules)
         module_exec(&block)
       end
     end
@@ -121,10 +126,10 @@ MiniTest::Spec.class_eval do
 end
 
 class BaseTest < MiniTest::Spec
-  let (:new_album)  { OpenStruct.new.extend(representer) }
-  let (:album)      { OpenStruct.new(:songs => ["Fuck Armageddon"]).extend(representer) }
-  let (:song) { OpenStruct.new(:title => "Resist Stance") }
-  let (:song_representer) { Module.new do include Representable::Hash; property :title end  }
+  let(:new_album)  { OpenStruct.new.extend(representer) }
+  let(:album)      { OpenStruct.new(:songs => ["Fuck Armageddon"]).extend(representer) }
+  let(:song) { OpenStruct.new(:title => "Resist Stance") }
+  let(:song_representer) { Module.new do include Representable::Hash; property :title end  }
 
 end
 
@@ -132,4 +137,17 @@ Band = Struct.new(:id, :name) do
   def [](*attrs)
     attrs.collect { |attr| send(attr) }
   end
+end
+
+# When running tests we print Debug information only if
+# DEBUG is set at command line like:
+#
+# DEBUG=true bundle exec rake
+
+# Set initial debuggin state based on enviroment variable DEBUG
+case ENV['DEBUG']
+when true, 1, '1', 'on', 'true'
+  Representable::Logger.on!
+else
+  Representable::Logger.off!
 end

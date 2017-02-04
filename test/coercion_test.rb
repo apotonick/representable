@@ -17,7 +17,7 @@ class VirtusCoercionTest < MiniTest::Spec
     end
   end
 
-  let (:album) { OpenStruct.new(:title => "Dire Straits", :length => 41.34,
+  let(:album) { OpenStruct.new(:title => "Dire Straits", :length => 41.34,
     :band  => OpenStruct.new(:founded => "1977"),
     :songs => [OpenStruct.new(:ok => 1), OpenStruct.new(:ok => 0)]) }
 

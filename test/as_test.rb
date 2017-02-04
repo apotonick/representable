@@ -7,8 +7,8 @@ class AsTest < MiniTest::Spec
     # :yaml => [Representable::YAML, "---\nsong:\n  name: Alive\n", "---\nsong:\n  name: You've Taken Everything\n"],
   ) do |format, mod, input, output|
 
-    let (:song) { representer.prepare(Song.new("Revolution")) }
-    let (:format) { format }
+    let(:song) { representer.prepare(Song.new("Revolution")) }
+    let(:format) { format }
 
 
     describe "as: with :symbol" do

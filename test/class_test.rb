@@ -54,7 +54,7 @@ class ClassTest < BaseTest
 
 
   describe "lambda receiving fragment and args" do
-    let (:klass) { Class.new do
+    let(:klass) { Class.new do
       class << self
         attr_accessor :args
       end
@@ -75,7 +75,7 @@ class ClassTest < BaseTest
 
 
   describe "collection: lambda receiving fragment and args" do
-    let (:klass) { Class.new do
+    let(:klass) { Class.new do
       class << self
         attr_accessor :args
       end

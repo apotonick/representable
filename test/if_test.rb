@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class IfTest < MiniTest::Spec
-  let (:band_class) { Class.new do
+  let(:band_class) { Class.new do
     include Representable::Hash
     attr_accessor :fame
     self
@@ -18,14 +18,14 @@ class IfTest < MiniTest::Spec
     band_class.class_eval { property :fame, :if => lambda { |*| false } }
     band = band_class.new
     band.from_hash({"fame"=>"oh yes"})
-    assert_equal nil, band.fame
+    assert_nil band.fame
   end
 
   it "ignores property when :exclude'ed even when condition is true" do
     band_class.class_eval { property :fame, :if => lambda { |*| true } }
     band = band_class.new
     band.from_hash({"fame"=>"oh yes"}, {:exclude => [:fame]})
-    assert_equal nil, band.fame
+    assert_nil band.fame
   end
 
   it "executes block in instance context" do

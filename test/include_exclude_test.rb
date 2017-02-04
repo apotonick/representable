@@ -17,8 +17,8 @@ class IncludeExcludeTest < Minitest::Spec
     end
   end
 
-  let (:song) { Song.new("Listless", Artist.new("7yearsbadluck", 1  )) }
-  let (:decorator) { representer.new(song) }
+  let(:song) { Song.new("Listless", Artist.new("7yearsbadluck", 1  )) }
+  let(:decorator) { representer.new(song) }
 
   describe "#from_hash" do
     it "accepts :exclude option" do

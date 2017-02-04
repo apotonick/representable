@@ -6,15 +6,13 @@ class DefinitionTest < MiniTest::Spec
   # TODO: test that we DON'T clone options, that must happen in
   describe "#initialize" do
     it do
-      opts = nil
-
       # new yields the defaultized options HASH.
       definition = Definition.new(:song, :extend => Module) do |options|
         options[:awesome] = true
         options[:parse_filter] << 1
 
         # default variables
-        options[:as].must_equal nil
+        options[:as].must_be_nil
         options[:extend].must_equal Module
       end
       definition.name.must_equal "song"
@@ -27,14 +25,14 @@ class DefinitionTest < MiniTest::Spec
   end
 
   describe "#[]" do
-    let (:definition) { Definition.new(:song) }
+    let(:definition) { Definition.new(:song) }
     # default is nil.
-    it { definition[:bla].must_equal nil }
+    it { definition[:bla].must_be_nil }
   end
 
   # merge!
   describe "#merge!" do
-    let (:definition) { Definition.new(:song, :whatever => true) }
+    let(:definition) { Definition.new(:song, :whatever => true) }
 
     # merges new options.
     it { definition.merge!(:something => true)[:something].must_equal true }
@@ -61,7 +59,7 @@ class DefinitionTest < MiniTest::Spec
     end
 
     describe "with :parse_filter" do
-      let (:definition) { Definition.new(:title, :parse_filter => 1) }
+      let(:definition) { Definition.new(:title, :parse_filter => 1) }
 
       # merges :parse_filter and :render_filter.
       it do
@@ -85,11 +83,11 @@ class DefinitionTest < MiniTest::Spec
 
   # delete!
   describe "#delete!" do
-    let (:definition) { Definition.new(:song, serialize: "remove me!") }
+    let(:definition) { Definition.new(:song, serialize: "remove me!") }
 
     before { definition[:serialize].(nil).must_equal "remove me!" }
 
-    it { definition.delete!(:serialize)[:serialize].must_equal nil }
+    it { definition.delete!(:serialize)[:serialize].must_be_nil }
   end
 
   # #inspect
@@ -104,7 +102,7 @@ class DefinitionTest < MiniTest::Spec
     end
 
     it "responds to #representer_module" do
-      assert_equal nil, Representable::Definition.new(:song).representer_module
+      assert_nil Representable::Definition.new(:song).representer_module
       assert_equal Hash, Representable::Definition.new(:song, :extend => Hash).representer_module
     end
 
@@ -217,7 +215,7 @@ class DefinitionTest < MiniTest::Spec
   describe ":default => value" do
     it "responds to #default" do
       @def = Representable::Definition.new(:song)
-      assert_equal nil, @def[:default]
+      assert_nil @def[:default]
     end
 
     it "accepts a default value" do

@@ -20,11 +20,11 @@ class FeaturesTest < MiniTest::Spec
     end
   }
 
-  let (:song) { OpenStruct.new(:details => Object.new) }
+  let(:song) { OpenStruct.new(:details => Object.new) }
 
   describe "Module" do
     representer! do
-      instance_exec &definition
+      instance_exec(&definition)
     end
 
     it { song.extend(representer).to_hash.must_equal({"title"=>"Is It A Lie", "length"=>"2:31", "details"=>{"title"=>"Is It A Lie"}}) }
@@ -33,7 +33,7 @@ class FeaturesTest < MiniTest::Spec
 
   describe "Decorator" do
     representer!(:decorator => true) do
-      instance_exec &definition
+      instance_exec(&definition)
     end
 
     it { representer.new(song).to_hash.must_equal({"title"=>"Is It A Lie", "length"=>"2:31", "details"=>{"title"=>"Is It A Lie"}}) }

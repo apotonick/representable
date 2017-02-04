@@ -60,7 +60,7 @@ module Representable
       def find_nodes(doc, as)
         selector  = as
         selector  = "#{self[:wrap]}/#{as}" if self[:wrap]
-        nodes     = doc.xpath(selector)
+        doc.xpath(selector) # nodes
       end
 
       def node_for(parent, name)

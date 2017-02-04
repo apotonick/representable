@@ -9,7 +9,7 @@ class YamlPublicMethodsTest < Minitest::Spec
     property :name
   end
 
-  let (:data) { %{---
+  let(:data) { %{---
 id: 1
 name: Rancid
 } }
@@ -19,7 +19,7 @@ name: Rancid
 
   #---
   # to_yaml
-  let (:band) { Band.new("1", "Rancid") }
+  let(:band) { Band.new("1", "Rancid") }
 
   it { BandRepresenter.new(band).to_yaml.must_equal data }
   it { BandRepresenter.new(band).render.must_equal data }
@@ -29,7 +29,7 @@ class YamlTest < MiniTest::Spec
   def self.yaml_representer(&block)
     Module.new do
       include Representable::YAML
-      instance_exec &block
+      instance_exec(&block)
     end
   end
 
@@ -39,9 +39,9 @@ class YamlTest < MiniTest::Spec
 
 
   describe "property" do
-    let (:yaml) { yaml_representer do property :best_song end }
+    let(:yaml) { yaml_representer do property :best_song end }
 
-    let (:album) { Album.new.tap do |album|
+    let(:album) { Album.new.tap do |album|
       album.best_song = "Liar"
     end }
 
@@ -75,12 +75,12 @@ best_song: This Song Is Recycled
 
     describe "with :class and :extend" do
       yaml_song = yaml_representer do property :name end
-      let (:yaml_album) { Module.new do
+      let(:yaml_album) { Module.new do
         include Representable::YAML
         property :best_song, :extend => yaml_song, :class => Song
       end }
 
-      let (:album) { Album.new.tap do |album|
+      let(:album) { Album.new.tap do |album|
         album.best_song = Song.new("Liar")
       end }
 
@@ -107,9 +107,9 @@ best_song:
 
 
   describe "collection" do
-    let (:yaml) { yaml_representer do collection :songs end }
+    let(:yaml) { yaml_representer do collection :songs end }
 
-    let (:album) { Album.new.tap do |album|
+    let(:album) { Album.new.tap do |album|
       album.songs = ["Jackhammer", "Terrible Man"]
     end }
 
@@ -149,7 +149,7 @@ songs: [Off Key Melody, Sinking]").must_equal Album.new(["Off Key Melody", "Sink
 
 
     describe "with :class and :extend" do
-      let (:yaml_album) { Module.new do
+      let(:yaml_album) { Module.new do
         include Representable::YAML
         collection :songs, :class => Song do
           property :name
@@ -157,7 +157,7 @@ songs: [Off Key Melody, Sinking]").must_equal Album.new(["Off Key Melody", "Sink
         end
       end }
 
-      let (:album) { Album.new([Song.new("Liar", 1), Song.new("What I Know", 2)]) }
+      let(:album) { Album.new([Song.new("Liar", 1), Song.new("What I Know", 2)]) }
 
 
       describe "#to_yaml" do

@@ -21,7 +21,7 @@ class HashBindingTest < MiniTest::Spec
       it "returns fragment if present" do
         assert_equal "Stick The Flag Up Your Goddamn Ass, You Sonofabitch", @property.read({"song" => "Stick The Flag Up Your Goddamn Ass, You Sonofabitch"}, "song")
         assert_equal "", @property.read({"song" => ""}, "song")
-        assert_equal nil, @property.read({"song" => nil}, "song")
+        assert_nil @property.read({"song" => nil}, "song")
       end
 
       it "returns FRAGMENT_NOT_FOUND if not in document" do

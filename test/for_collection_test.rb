@@ -7,8 +7,8 @@ class ForCollectionTest < MiniTest::Spec
     property :name
   end
 
-  let (:songs) { [Song.new("Days Go By"), Song.new("Can't Take Them All")] }
-  let (:json)  { "[{\"name\":\"Days Go By\"},{\"name\":\"Can't Take Them All\"}]" }
+  let(:songs) { [Song.new("Days Go By"), Song.new("Can't Take Them All")] }
+  let(:json)  { "[{\"name\":\"Days Go By\"},{\"name\":\"Can't Take Them All\"}]" }
 
 
   # Module.for_collection
@@ -20,9 +20,9 @@ class ForCollectionTest < MiniTest::Spec
   ) do |format, mod, output, input|
 
     describe "Module::for_collection [#{format}]" do
-      let (:format) { format }
+      let(:format) { format }
 
-      let (:representer) {
+      let(:representer) {
         Module.new do
           include mod
           property :name#, :as => :title
@@ -40,9 +40,9 @@ class ForCollectionTest < MiniTest::Spec
     end
 
     describe "Module::for_collection without configuration [#{format}]" do
-      let (:format) { format }
+      let(:format) { format }
 
-      let (:representer) {
+      let(:representer) {
         Module.new do
           include mod
           property :name
@@ -55,8 +55,8 @@ class ForCollectionTest < MiniTest::Spec
 
 
     describe "Decorator::for_collection [#{format}]" do
-      let (:format) { format }
-      let (:representer) {
+      let(:format) { format }
+      let(:representer) {
         Class.new(Representable::Decorator) do
           include mod
           property :name

@@ -7,7 +7,7 @@ class ConfigTest < MiniTest::Spec
 
   describe "wrapping" do
     it "returns false per default" do
-      assert_equal nil, subject.wrap_for("Punk", nil)
+      assert_nil subject.wrap_for("Punk", nil)
     end
 
     # it "infers a printable class name if set to true" do
@@ -23,13 +23,13 @@ class ConfigTest < MiniTest::Spec
 
   describe "#[]" do
     # does return nil for non-existent
-    it { subject[:hello].must_equal nil }
+    it { subject[:hello].must_be_nil }
   end
 
   # describe "#[]" do
   #   before { subject.add(:title, {:me => true}) }
 
-  #   it { subject[:unknown].must_equal     nil }
+  #   it { subject[:unknown].must_be_nil }
   #   it { subject.get(:title)[:me].must_equal  true }
   #   it { subject["title"][:me].must_equal true }
   # end
@@ -59,7 +59,7 @@ class ConfigTest < MiniTest::Spec
     # this is actually tested in context in inherit_test.
     it "overrides former definition" do
       subject.add(:title, {:peer => Module})
-      subject.get(:title)[:me].must_equal nil
+      subject.get(:title)[:me].must_be_nil
       subject.get(:title)[:peer].must_equal Module
     end
 
@@ -84,7 +84,7 @@ class ConfigTest < MiniTest::Spec
       subject.get(:genre).must_be_kind_of Representable::Definition
 
       subject.remove(:genre)
-      subject.get(:genre).must_equal nil
+      subject.get(:genre).must_be_nil
     end
   end
 

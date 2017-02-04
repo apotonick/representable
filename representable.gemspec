@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.platform    = Gem::Platform::RUBY
   spec.authors     = ["Nick Sutterer"]
   spec.email       = ["apotonick@gmail.com"]
-  spec.homepage    = "https://github.com/apotonick/representable/"
+  spec.homepage    = "https://github.com/trailblazer/representable/"
   spec.summary     = %q{Renders and parses JSON/XML/YAML documents from and to Ruby objects. Includes plain properties, collections, nesting, coercion and more.}
   spec.description = spec.summary
 
@@ -26,9 +26,11 @@ Gem::Specification.new do |spec|
   spec.add_dependency "declarative-option", "< 0.2.0"
 
   spec.add_development_dependency "rake"
-  spec.add_development_dependency "test_xml", "0.1.6"
+  spec.add_development_dependency "test_xml"
   spec.add_development_dependency "minitest"
   spec.add_development_dependency "virtus"
   spec.add_development_dependency "multi_json"
   spec.add_development_dependency "ruby-prof" if RUBY_ENGINE == "ruby" # mri
+  spec.add_development_dependency "nokogiri"
+  spec.add_development_dependency "minitest-line"
 end

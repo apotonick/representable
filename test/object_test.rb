@@ -18,8 +18,8 @@ class ObjectTest < MiniTest::Spec
     # TODO: collection
   end
 
-  let (:source) { Song.new("The King Is Dead", Album.new("Ruiner", [Song.new("In Vino Veritas II")])) }
-  let (:target) { Song.new }
+  let(:source) { Song.new("The King Is Dead", Album.new("Ruiner", [Song.new("In Vino Veritas II")])) }
+  let(:target) { Song.new }
 
   it do
     representer.prepare(target).from_object(source)
@@ -33,8 +33,8 @@ class ObjectTest < MiniTest::Spec
   it do
     representer.prepare(Song.new("The King Is Dead")).from_object(Song.new)
 
-    target.title.must_equal nil # scalar property gets overridden when nil.
-    target.album.must_equal nil # nested property stays nil.
+    target.title.must_be_nil # scalar property gets overridden when nil.
+    target.album.must_be_nil # nested property stays nil.
   end
 
   # to_object

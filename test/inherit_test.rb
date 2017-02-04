@@ -10,7 +10,7 @@ class InheritTest < MiniTest::Spec
     property :track, :as => :no
   end
 
-  let (:song) { Song.new(Struct.new(:string).new("Roxanne"), 1) }
+  let(:song) { Song.new(Struct.new(:string).new("Roxanne"), 1) }
 
   describe ":inherit plain property" do
     representer! do
@@ -41,7 +41,7 @@ class InheritTest < MiniTest::Spec
     representer! do
       include SongRepresenter
 
-      puts "passing block"
+      # passing block
       property :name, :inherit => true do # inherit as: title
         property :string, :as => :s
         property :length
@@ -108,7 +108,7 @@ class InheritTest < MiniTest::Spec
       end
     end
 
-    let (:inheriting) {
+    let(:inheriting) {
       class InheritingDecorator < representer
         include Representable::Debug
         property :hit, :inherit => true do

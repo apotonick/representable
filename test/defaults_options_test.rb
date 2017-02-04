@@ -1,9 +1,9 @@
 require 'test_helper'
 
 class DefaultsOptionsTest < BaseTest
-  let (:format) { :hash }
-  let (:song) { Struct.new(:title, :author_name, :song_volume, :description).new("Revolution", "Some author", 20, nil) }
-  let (:prepared) { representer.prepare song }
+  let(:format) { :hash }
+  let(:song) { Struct.new(:title, :author_name, :song_volume, :description).new("Revolution", "Some author", 20, nil) }
+  let(:prepared) { representer.prepare song }
 
   describe "hash options combined with dynamic options" do
     representer! do

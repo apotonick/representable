@@ -2,7 +2,6 @@ language: ruby
 cache: bundler
 sudo: false
 rvm:
-  - 1.9.3-p551
   - 2.0.0-p648
   - 2.1.9
   - 2.2.6
@@ -11,4 +10,11 @@ rvm:
 matrix:
   include:
   - rvm: jruby-9.1.5.0
-    env: JRUBY_OPTS="--profile.api"
+    env: JRUBY_OPTS="--profile.api"  # This enables profiling at JRuby
+    before_install: "gem install bundler"    # This ensures correct
+    before_script: "bundle update nokogiri"  # nokogiri version resolution
+  - rvm: 1.9.3-p551
+    before_install: "gem install bundler"    # This ensures correct
+    before_script: "bundle update nokogiri"  # nokogiri version resolution
+  allow_failures:
+    - rvm: jruby-9.1.5.0

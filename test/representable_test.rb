@@ -224,7 +224,7 @@ class RepresentableTest < MiniTest::Spec
       @band = Class.new(Band) { property :name; collection :founders, :writeable => false; attr_accessor :founders }.new
       @band.from_hash("name" => "Iron Maiden", "groupies" => 2, "founders" => ["Steve Harris"])
       assert_equal "Iron Maiden", @band.name
-      assert_equal nil, @band.founders
+      assert_nil @band.founders
     end
 
     it "always returns the represented" do
@@ -261,7 +261,7 @@ class RepresentableTest < MiniTest::Spec
 
         @band = Band.new.extend(repr)
         @band.send(config.first, config.last)
-        assert_equal nil, @band.name, "Failed in #{format}"
+        assert_nil @band.name, "Failed in #{format}"
       end
     end
 
@@ -449,9 +449,9 @@ class RepresentableTest < MiniTest::Spec
     end
 
     describe ":decorator" do
-      let (:extend_rpr) { Module.new { include Representable::Hash; collection :songs, :extend => SongRepresenter } }
-      let (:decorator_rpr) { Module.new { include Representable::Hash; collection :songs, :decorator => SongRepresenter } }
-      let (:songs) { [Song.new("Bloody Mary")] }
+      let(:extend_rpr) { Module.new { include Representable::Hash; collection :songs, :extend => SongRepresenter } }
+      let(:decorator_rpr) { Module.new { include Representable::Hash; collection :songs, :decorator => SongRepresenter } }
+      let(:songs) { [Song.new("Bloody Mary")] }
 
       it "is aliased to :extend" do
         Album.new(songs).extend(extend_rpr).to_hash.must_equal Album.new(songs).extend(decorator_rpr).to_hash
@@ -470,8 +470,8 @@ class RepresentableTest < MiniTest::Spec
     end
 
     describe "::prepare" do
-      let (:song) { Song.new("Still Friends In The End") }
-      let (:album) { Album.new([song]) }
+      let(:song) { Song.new("Still Friends In The End") }
+      let(:album) { Album.new([song]) }
 
       describe "module including Representable" do
         it "uses :extend strategy" do

@@ -5,7 +5,7 @@ Representable maps Ruby objects to documents and back.
 [![Gitter Chat](https://badges.gitter.im/trailblazer/chat.svg)](https://gitter.im/trailblazer/chat)
 [![TRB Newsletter](https://img.shields.io/badge/TRB-newsletter-lightgrey.svg)](http://trailblazer.to/newsletter/)
 [![Build
-Status](https://travis-ci.org/apotonick/representable.svg)](https://travis-ci.org/apotonick/representable)
+Status](https://travis-ci.org/trailblazer/representable.svg)](https://travis-ci.org/trailblazer/representable)
 [![Gem Version](https://badge.fury.io/rb/representable.svg)](http://badge.fury.io/rb/representable)
 
 In other words: Take an object and decorate it with a representer module. This will allow you to render a JSON, XML or YAML document from that object. But that's only half of it! You can also use representers to parse a document and create or populate an object.

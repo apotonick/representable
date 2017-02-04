@@ -11,14 +11,14 @@ class JSONPublicMethodsTest < Minitest::Spec
     property :name
   end
 
-  let (:json) { '{"id":1,"name":"Rancid"}' }
+  let(:json) { '{"id":1,"name":"Rancid"}' }
 
   it { BandRepresenter.new(Band.new).from_json(json)[:id, :name].must_equal [1, "Rancid"] }
   it { BandRepresenter.new(Band.new).parse(json)[:id, :name].must_equal [1, "Rancid"] }
 
   #---
   # to_json
-  let (:band) { Band.new(1, "Rancid") }
+  let(:band) { Band.new(1, "Rancid") }
 
   it { BandRepresenter.new(band).to_json.must_equal json }
   it { BandRepresenter.new(band).render.must_equal json }
@@ -253,9 +253,7 @@ end
         assert_json '{"songName":"22 Acacia Avenue"}', song.to_json
       end
     end
-
-end
-
+  end
 
   class CollectionTest < MiniTest::Spec
     describe "collection :name" do
@@ -363,7 +361,7 @@ end
 
       describe "parsing" do
         subject { OpenStruct.new.extend(representer) }
-        let (:hsh) { {"7"=>{"name"=>"Contemplation"}} }
+        let(:hsh) { {"7"=>{"name"=>"Contemplation"}} }
 
         it "parses incoming hash" do
           subject.from_hash("songs"=>hsh).songs.must_equal({"7"=>Song.new("Contemplation")})

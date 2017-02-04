@@ -68,7 +68,7 @@ class PipelineTest < MiniTest::Spec
 
   ######### scalar property
 
-  let (:title) {
+  let(:title) {
     dfn = R::Definition.new(:title)
 
     R::Hash::Binding.new(dfn)
@@ -105,13 +105,13 @@ class PipelineTest < MiniTest::Spec
     property :name
   end
 
-  let (:artist) {
+  let(:artist) {
     dfn = R::Definition.new(:artist, extend: ArtistRepresenter, class: Artist)
 
     R::Hash::Binding.new(dfn)
   }
 
-  let (:song_model) { Song.new("Lime Green", Artist.new("Diesel Boy")) }
+  let(:song_model) { Song.new("Lime Green", Artist.new("Diesel Boy")) }
 
   it "rendering typed property" do
     doc = {}
@@ -146,7 +146,7 @@ class PipelineTest < MiniTest::Spec
 
   ######### collection :ratings
 
-  let (:ratings) {
+  let(:ratings) {
     dfn = R::Definition.new(:ratings, collection: true, skip_render: ->(*) { false })
 
     R::Hash::Binding::Collection.new(dfn)
@@ -167,7 +167,7 @@ class PipelineTest < MiniTest::Spec
   end
 
 ######### collection :songs, extend: SongRepresenter
-  let (:artists) {
+  let(:artists) {
     dfn = R::Definition.new(:artists, collection: true, extend: ArtistRepresenter, class: Artist)
 
     R::Hash::Binding::Collection.new(dfn)
@@ -188,7 +188,7 @@ class PipelineTest < MiniTest::Spec
     doc.must_equal({"artists"=>[{"name"=>"Diesel Boy"}, {"name"=>"Van Halen"}]})
   end
 
-let (:album_model) { Album.new(nil, [Artist.new("Diesel Boy"), Artist.new("Van Halen")]) }
+let(:album_model) { Album.new(nil, [Artist.new("Diesel Boy"), Artist.new("Van Halen")]) }
 
   it "parse typed collection" do
     doc = {"artists"=>[{"name"=>"Diesel Boy"}, {"name"=>"Van Halen"}]}
@@ -212,7 +212,7 @@ let (:album_model) { Album.new(nil, [Artist.new("Diesel Boy"), Artist.new("Van H
 
   # TODO: test with arrays, too, not "only" Pipeline instances.
   describe "#Insert Pipeline[], Function, replace: OldFunction" do
-    let (:pipeline) { P[R::GetValue, R::StopOnSkipable, R::StopOnNil] }
+    let(:pipeline) { P[R::GetValue, R::StopOnSkipable, R::StopOnNil] }
 
     it "returns Pipeline instance when passing in Pipeline instance" do
       P::Insert.(pipeline, R::Default, replace: R::StopOnSkipable).must_be_instance_of(R::Pipeline)
