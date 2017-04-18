@@ -101,7 +101,7 @@ Representers can also manage compositions. Why not use an album that contains a 
 class Album < OpenStruct
 end
 
-album = Album.new(name: "The Police", songs: [song, Song.new(title: "Synchronicity")])
+album = Album.new(name: "The Police", songs: [Song.new(title: "Synchronicity")])
 ```
 
 Here comes the representer that defines the composition.
