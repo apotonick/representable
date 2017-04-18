@@ -18,7 +18,7 @@ module Representable
   end
 
   StopOnSkipable = ->(input, options) do
-    options[:binding].send(:skipable_empty_value?, input) ? Pipeline::Stop : input
+    options[:binding].skipable_empty_value?(input) ? Pipeline::Stop : input
   end
 
   RenderFilter = ->(input, options) do
