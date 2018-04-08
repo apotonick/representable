@@ -95,6 +95,14 @@ class XmlTest < MiniTest::Spec
       it "delegates to #to_node and returns string" do
         assert_xml_equal "<band><name>Rise Against</name></band>", Band.new("Rise Against").to_xml
       end
+
+      describe "encoding option" do
+        it "sets the xml encoding" do
+          representer = Band.new("Die Ärzte")
+          assert_includes representer.to_xml(encoding: "UTF-8"), "Ä"
+          assert_includes representer.to_xml(encoding: "ASCII"), "&#196;"
+        end
+      end
     end
 
 
