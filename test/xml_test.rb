@@ -37,6 +37,19 @@ class XmlTest < MiniTest::Spec
     end
   end
 
+  class NestedBand
+    include Representable::XML
+    property :name
+    property :album do
+      property :name
+    end
+    attr_accessor :name, :album
+
+    def initialize(name=nil, album=nil)
+      name and self.name = name
+      album and self.album = OpenStruct.new(name: album)
+    end
+  end
 
   XML = Representable::XML
   Def = Representable::Definition
@@ -99,10 +112,17 @@ class XmlTest < MiniTest::Spec
       end
 
       describe "encoding option" do
+        before do
+          representer = NestedBand.new("Die Ärzte", "Geräusch")
+          @utf_8_xml = representer.to_xml(encoding: "UTF-8")
+          @ascii_xml = representer.to_xml(encoding: "ASCII")
+        end
+
         it "sets the xml encoding" do
-          representer = Band.new("Die Ärzte")
-          assert_includes representer.to_xml(encoding: "UTF-8"), "Ä"
-          assert_includes representer.to_xml(encoding: "ASCII"), "&#196;"
+          assert_includes @utf_8_xml, "Die Ärzte"
+          assert_includes @utf_8_xml, "Geräusch"
+          assert_includes @ascii_xml, "Die &#196;rzte"
+          assert_includes @ascii_xml, "Ger&#228;usch"
         end
       end
     end
