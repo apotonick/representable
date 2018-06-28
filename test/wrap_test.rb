@@ -76,10 +76,15 @@ class HashDisableWrapTest < MiniTest::Spec
 
   it do
     band.from_hash({"bands" => {"name"=>"Social Distortion"}}).name.must_equal "Social Distortion"
-    band.from_hash({"name"=>"Social Distortion"}, wrap: false).name.must_equal "Social Distortion"
-    band.from_hash({band: {"name"=>"Social Distortion"}}, wrap: :band).name.must_equal "Social Distortion"
+    band.from_hash({"name"=>"Bad Religion"}, wrap: false).name.must_equal "Bad Religion"
+    band.from_hash({"band"=>{"name"=>"Pennywise"}}, wrap: :band).name.must_equal "Pennywise"
   end
 
+  it 'raises a TypeError when unwrapped argument is not a Hash' do
+    -> { band.from_hash('bands' => '')         }.must_raise TypeError
+    -> { band.from_hash('', wrap: false)       }.must_raise TypeError
+    -> { band.from_hash({'band' => ''}, wrap: :band) }.must_raise TypeError
+  end
 
   class AlbumDecorator < Representable::Decorator
     include Representable::Hash
@@ -149,4 +154,3 @@ class XMLDisableWrapTest < MiniTest::Spec
   #   album.from_hash({"albums" => {"band" => {"name"=>"Rvivr"}}}).band.name.must_equal "Rvivr"
   # end
 end
-

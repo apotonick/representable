@@ -26,6 +26,7 @@ module Representable
 
     def from_hash(data, options={}, binding_builder=Binding)
       data = filter_wrap(data, options)
+      raise TypeError, "Expected Hash, got #{data.class}." unless ::Hash === data
 
       update_properties_from(data, options, binding_builder)
     end

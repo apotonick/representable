@@ -69,6 +69,38 @@ class ForCollectionTest < MiniTest::Spec
       it { parse(representer.for_collection.new([]), input).must_equal songs }
     end
   end
-
   # with module including module
+
+  describe 'bad collections' do
+    let(:representer) {
+      Class.new(Representable::Decorator) do
+        include Representable::Hash
+        property :name
+
+        collection_representer class: Song
+      end
+    }
+
+    it 'parses when argument is an Array' do
+      representer.for_collection.new([]).from_hash([{ 'name' => 'Gateways' }])
+                 .must_equal [Song.new('Gateways')]
+    end
+
+    it 'parses when argument is a Hash' do
+      representer.for_collection.new([]).from_hash('name' => 'Mother North')
+                 .must_equal [Song.new('Mother North')]
+    end
+
+    it 'raises a TypeError when argument is not an Enumerable' do
+      from_hash = -> {
+        representer.for_collection.new([]).from_hash(nil)
+      }.must_raise TypeError
+      from_hash.message.must_equal 'Expected Enumerable, got NilClass.'
+
+      from_hash = -> {
+        representer.for_collection.new([]).from_hash('')
+      }.must_raise TypeError
+      from_hash.message.must_equal 'Expected Enumerable, got String.'
+    end
+  end
 end
