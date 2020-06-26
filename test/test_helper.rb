@@ -1,9 +1,11 @@
+require 'pry-byebug'
 require 'representable'
 
 require 'minitest/autorun'
 require 'test_xml/mini_test'
 
 require "representable/debug"
+require 'minitest/assertions'
 
 module MiniTest::Assertions
   def assert_equal_xml(text, subject)
