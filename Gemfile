@@ -8,6 +8,4 @@ group :test do
   gem "nokogiri", require: false
 end
 gem 'pry-byebug'
-gem 'rubocop-minitest', require: false
-gem 'rubocop-performance', require: false
 

@@ -2,7 +2,7 @@
 module Representable
   module Binding::Factories
     def pipeline_for(name, input, options)
-      return yield unless proc = @definition[name]
+      return yield unless (proc = @definition[name])
 
       # proc.(self, options)
       instance_exec(input, options, &proc)

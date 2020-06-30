@@ -6,7 +6,7 @@ module Representable
     end
 
     module_function def representable_log(message)
-      _representable_logger.debug message
+      _representable_logger.debug { message }
     end
 
     def update_properties_from(doc, options, format)
