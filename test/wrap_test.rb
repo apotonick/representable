@@ -36,7 +36,7 @@ class WrapTest < MiniTest::Spec
       let(:format) { format }
 
       representer!(:module => mod) do
-        self.representation_wrap = lambda { |args| "#{name}#{args[:number]}" }
+        self.representation_wrap = lambda { |number:, **| "#{name}#{number}" }
         property :genre
       end
 

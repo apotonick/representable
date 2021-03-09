@@ -1,3 +1,4 @@
+require "representable"
 require "uber/inheritable_attr"
 
 module Representable

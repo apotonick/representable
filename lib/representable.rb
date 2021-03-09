@@ -43,7 +43,7 @@ module Representable
 private
   # Reads values from +doc+ and sets properties accordingly.
   def update_properties_from(doc, options, format)
-    propagated_options = normalize_options(options)
+    propagated_options = normalize_options(**options)
 
     representable_map!(doc, propagated_options, format, :uncompile_fragment)
     represented
@@ -51,7 +51,7 @@ private
 
   # Compiles the document going through all properties.
   def create_representation_with(doc, options, format)
-    propagated_options = normalize_options(options)
+    propagated_options = normalize_options(**options)
 
     representable_map!(doc, propagated_options, format, :compile_fragment)
     doc
@@ -72,10 +72,8 @@ private
     representable_attrs.collect {|definition| format.build(definition) }
   end
 
-  def normalize_options(options)
-    return options if options.any?
-
-    {user_options: {}}.merge(options) # TODO: use keyword args once we drop 2.0.
+  def normalize_options(user_options: {}, **options)
+    { user_options: user_options }.merge(options)
   end
 
   # Prepares options for a particular nested representer.
@@ -95,8 +93,8 @@ private
     @representable_attrs ||= self.class.definitions
   end
 
-  def representation_wrap(*args)
-    representable_attrs.wrap_for(represented, *args)
+  def representation_wrap(options = {})
+    representable_attrs.wrap_for(represented, options)
   end
 
   def represented

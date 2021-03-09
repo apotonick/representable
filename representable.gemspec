@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "uber",               "< 0.2.0"
   spec.add_dependency "declarative",        "< 0.1.0"
-  spec.add_dependency "declarative-option", "< 0.2.0"
+  spec.add_dependency "declarative-option", ">= 0.1.1", "< 0.2.0"
 
   spec.add_development_dependency "rake"
   spec.add_development_dependency "test_xml", ">= 0.1.6"

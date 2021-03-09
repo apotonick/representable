@@ -24,10 +24,10 @@ module Representable
     end
 
     # Computes the wrap string or returns false.
-    def wrap_for(represented, *args, &block)
+    def wrap_for(represented, options = {}, &block)
       return unless @wrap
 
-      value = @wrap.(represented, *args)
+      value = @wrap.(represented, keyword_arguments: options.to_hash)
 
       return value if value != true
 

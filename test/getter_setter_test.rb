@@ -3,8 +3,8 @@ require 'test_helper'
 class GetterSetterTest < BaseTest
   representer! do
     property :name, # key under :name.
-      :getter => lambda { |options| "#{options[:user_options][:welcome]} #{song_name}" },
-      :setter => lambda { |options| self.song_name = "#{options[:user_options][:welcome]} #{options[:input]}" }
+      :getter => lambda { |user_options:, **| "#{user_options[:welcome]} #{song_name}" },
+      :setter => lambda { |user_options:, input:, **| self.song_name = "#{user_options[:welcome]} #{input}" }
   end
 
   subject { Struct.new(:song_name).new("Mony Mony").extend(representer) }
