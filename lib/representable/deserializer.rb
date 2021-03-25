@@ -20,7 +20,13 @@ module Representable
   end
 
   OverwriteOnNil = ->(input, options) do
-    input.nil? ? (SetValue.(input, options); Pipeline::Stop) : input
+    if input.nil?
+      function = options[:binding][:setter] ? Setter : SetValue
+      function.(input, options)
+      Pipeline::Stop
+    else
+      input
+    end
   end
 
   Default = ->(input, options) do
