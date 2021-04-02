@@ -4,7 +4,6 @@ module Representable
   # architecture).
   module Hash
     autoload :Binding, 'representable/hash/binding'
-    autoload :Conversion, 'representable/hash/conversion'
     autoload :AllowSymbols, 'representable/hash/allow_symbols'
     autoload :Collection, 'representable/hash/collection'
     def self.included(base)
