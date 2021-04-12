@@ -1,3 +1,6 @@
+# 3.1.1
+* fix dry-types dependency (should not be a development dependency, as it is actually used in this gem)
+
 # 3.1.0
 * Remove circular require
 * Use Dry-types 1.0.0+ as coercion library
